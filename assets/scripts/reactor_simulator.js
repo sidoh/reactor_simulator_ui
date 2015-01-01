@@ -9,13 +9,16 @@
 
   var tmpresponse = {"fuelConsumption":2.5585455894470215,"output":67931.921875,"fuelFertility":4.8164372,"coolantTemperature":20.0,"fuelHeat":2872.277,"reactorHeat":2783.1367,"reactorDefinition":{"xSize":9,"zSize":9,"height":13,"layout":"XXXXXXXXCXCXCXXXXXXXXXCXCXCXXXXXXXXXCXCXCXXXXXXXX","activelyCooled":false}};
 
-  showPage = function(id) {
+  var showPage = function(id) {
     $('.page')
         .hide()
         .filter(function() { return $(this).attr('id') == id; }).show();
+    $('.masthead-nav li')
+        .removeClass('active')
+        .filter(function() { return $('a', this).data('page') == id }).addClass('active');
   };
 
-  createReactor = function(x, z, height) {
+  var createReactor = function(x, z, height) {
     x = parseInt(x);
     z = parseInt(z);
     height = parseInt(height);
@@ -56,24 +59,24 @@
     reactorArea.append(gridTable);
   };
 
-  selectGridOption = function(char) {
+  var selectGridOption = function(char) {
     $('.grid-option')
         .removeClass('selected')
         .filter(function() { return $(this).data('character') == char; })
         .addClass('selected');
   };
 
-  selectedGridOption = function() {
+  var selectedGridOption = function() {
     return $('.grid-option.selected');
   };
 
-  getTextureImg = function(character) {
+  var getTextureImg = function(character) {
     return $('<div class="texture"></div>')
         .css('background-image', 'url(assets/textures/' + character + '.gif)')
         .html('&nbsp;');
   };
 
-  processCell = function() {
+  var processCell = function() {
     var selected = selectedGridOption();
 
     $(this)
@@ -82,7 +85,7 @@
         .append(getTextureImg(selected.data('character')));
   };
 
-  getLayoutStr = function() {
+  var getLayoutStr = function() {
     var layout = "";
 
     $('.grid-table td.contents').each(function() {
@@ -151,6 +154,10 @@
           {definition: JSON.stringify(definition)},
           displaySimulationResponse
       );
+    });
+
+    $('.masthead-nav a').click(function() {
+      showPage($(this).data('page'));
     });
   });
 })(jQuery);

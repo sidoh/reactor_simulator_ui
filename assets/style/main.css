@@ -7,6 +7,10 @@ body, div, p, a {
   font-family: minecraftia;
 }
 
+a {
+  color: #ccc;
+}
+
 #reactor-controls {
   position: fixed;
   top: 105px;
@@ -27,6 +31,17 @@ body, div, p, a {
   position: fixed;
   top: 110px;
   left: 320px;
+}
+
+.page {
+  display: none;
+  position: relative;
+  width: 700px;
+}
+
+.center-page {
+  display: inline-block;
+  margin: 0 auto;
 }
 
 .grid-option {
