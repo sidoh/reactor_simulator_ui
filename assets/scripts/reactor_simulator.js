@@ -7,6 +7,8 @@
     { character: 'X', name: 'Control Rod' },
   ];
 
+  var tmpresponse = {"fuelConsumption":2.5585455894470215,"output":67931.921875,"fuelFertility":4.8164372,"coolantTemperature":20.0,"fuelHeat":2872.277,"reactorHeat":2783.1367,"reactorDefinition":{"xSize":9,"zSize":9,"height":13,"layout":"XXXXXXXXCXCXCXXXXXXXXXCXCXCXXXXXXXXXCXCXCXXXXXXXX","activelyCooled":false}};
+
   showPage = function(id) {
     $('.page')
         .hide()
@@ -94,6 +96,16 @@
     return layout;
   };
 
+  var displaySimulationResponse = function(response) {
+    $('li', $('#simulation-results')).each(function() {
+      var rawValue = response[$(this).data('for')]
+          , roundedValue = Math.round(rawValue * 100) / 100
+          ;
+
+      $('.value', this).html(roundedValue);
+    });
+  };
+
   $(function() {
     $.each(gridOptions, function(i, e) {
       var elmt = $('<div class="grid-option"></div>')
@@ -134,7 +146,11 @@
             isActivelyCooled: false
           };
 
-      $.get('/api/simulate', {definition: JSON.stringify(definition)});
+      $.getJSON(
+          '/api/simulate',
+          {definition: JSON.stringify(definition)},
+          displaySimulationResponse
+      );
     });
   });
 })(jQuery);

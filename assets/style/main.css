@@ -112,3 +112,43 @@ h4 {
   max-height: 500px;
   overflow: visible;
 }
+
+#simulation-results ul {
+  list-style: none;
+}
+
+#simulation-results ul li {
+  text-align: left;
+}
+
+#simulation-results .unit, #simulation-results .value {
+
+}
+
+#simulation-results .unit {
+}
+
+.ico {
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: contain;
+  vertical-align: middle;
+}
+
+.ico-temperature {
+  background-image: url(../icons/temperature.gif);
+}
+
+.ico-energy {
+  background-image: url(../icons/energyOutput.gif);
+}
+
+.ico-consumption {
+  background-image: url(../icons/fuelUsageRate.gif);
+}
+
+.ico-fertility {
+  background-image: url(../icons/reactivity.gif);
+}
