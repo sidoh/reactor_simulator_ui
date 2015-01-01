@@ -1,0 +1,140 @@
+(function($) {
+  var gridOptions = [
+    { character: 'C', name: 'Gelid Cryotheum' },
+    { character: 'E', name: 'Liquid Ender' },
+    { character: 'D', name: 'Diamond Block' },
+    { character: 'G', name: 'Graphite Block' },
+    { character: 'X', name: 'Control Rod' },
+  ];
+
+  showPage = function(id) {
+    $('.page')
+        .hide()
+        .filter(function() { return $(this).attr('id') == id; }).show();
+  };
+
+  createReactor = function(x, z, height) {
+    x = parseInt(x);
+    z = parseInt(z);
+    height = parseInt(height);
+
+    var reactorArea = $('#reactor-area')
+        .html('')
+        .data('x', x)
+        .data('z', z)
+        .data('height', height);
+
+    var gridTable = $('<table class="grid-table"></table>')
+
+    for (var i = 0; i <= x+1; i++) {
+      var gridRow = $('<tr></tr>');
+
+      for (var j = 0; j <= z+1; j++) {
+        var elmt = $('<td></td>');
+
+        if (i == 0 || i == x+1 || j == 0 || j == z+1) {
+          if ((i == 0 && j == 0) || (i == x+1 && j == 0) || (i == 0 && j == z+1) || (i == x+1 && j == z+1)) {
+            elmt.append(getTextureImg('casing-corner'));
+          } else if (i == 0 || i == x+1) {
+            elmt.append(getTextureImg('casing-lr'));
+          } else {
+            elmt.append(getTextureImg('casing-ud'));
+          }
+          elmt.addClass('casing');
+        } else {
+          elmt.addClass('contents');
+        }
+
+        gridRow.append(elmt);
+      }
+
+      gridTable.append(gridRow);
+    }
+
+    reactorArea.append(gridTable);
+  };
+
+  selectGridOption = function(char) {
+    $('.grid-option')
+        .removeClass('selected')
+        .filter(function() { return $(this).data('character') == char; })
+        .addClass('selected');
+  };
+
+  selectedGridOption = function() {
+    return $('.grid-option.selected');
+  };
+
+  getTextureImg = function(character) {
+    return $('<div class="texture"></div>')
+        .css('background-image', 'url(assets/textures/' + character + '.gif)')
+        .html('&nbsp;');
+  };
+
+  processCell = function() {
+    var selected = selectedGridOption();
+
+    $(this)
+        .html('')
+        .attr('character', selected.data('character'))
+        .append(getTextureImg(selected.data('character')));
+  };
+
+  getLayoutStr = function() {
+    var layout = "";
+
+    $('.grid-table td.contents').each(function() {
+      if ($(this).attr('character') === undefined) {
+        layout += 'O';
+      } else {
+        layout += $(this).attr('character');
+      }
+    });
+
+    return layout;
+  };
+
+  $(function() {
+    $.each(gridOptions, function(i, e) {
+      var elmt = $('<div class="grid-option"></div>')
+          .data('character', e.character)
+          .data('name', e.name);
+      elmt.append(getTextureImg(e.character));
+      $('#controls-grid').append(elmt);
+      console.log(elmt);
+    });
+
+    $('#new-reactor').click(function() { showPage('reactor-prompt'); })
+
+    $('#create-reactor').click(function() {
+      createReactor($('#length').val(), $('#width').val(), $('#height').val());
+      showPage('reactor-design');
+    });
+
+    $('.grid-option').click(function() {
+      selectGridOption($(this).data('character'));
+    });
+
+    $('body').on('click', '.grid-table td.contents', function() {
+      processCell.call(this);
+    });
+
+    $('#fill').click(function() {
+      $('.grid-table td.contents').each(function() { processCell.call(this); });
+    });
+
+    $('#simulate').click(function() {
+      var reactorArea = $('#reactor-area')
+          , params = reactorArea.data()
+          , definition = {
+            xSize: params.x + 2,
+            zSize: params.z + 2,
+            height: params.height,
+            layout: getLayoutStr(),
+            isActivelyCooled: false
+          };
+
+      $.get('/api/simulate', {definition: JSON.stringify(definition)});
+    });
+  });
+})(jQuery);

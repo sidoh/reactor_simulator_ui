@@ -1,0 +1,100 @@
+@font-face {
+  font-family: minecraftia;
+  src: url(../fonts/Minecraftia.ttf);
+}
+
+body, div, p, a {
+  font-family: minecraftia;
+}
+
+#reactor-controls {
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 100px 15px 15px 15px;
+  max-width: 300px;
+}
+
+#controls-grid {
+  padding-top: 10px;
+}
+
+.grid-option {
+  width: 60px;
+  height: 60px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  display: inline-block;
+  margin: 3px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.texture {
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.grid-option.selected {
+  border: 2px solid yellow;
+}
+
+h4 {
+  margin: 15px;
+  text-decoration: underline;
+}
+
+.dim-prompt {
+  display: inline-block;
+}
+
+.dim-prompt label {
+  display: block;
+}
+
+.dim-prompt input[type="text"] {
+  width: 50px;
+  color: #000;
+  text-align: center;
+}
+
+.buttons {
+  margin-top: 30px;
+}
+
+.grid-table {
+  width: 500px;
+  height: 500px;
+}
+
+.grid-table, .grid-table td {
+  border-spacing: 0;
+  border-collapse: collapse;
+  padding: 0;
+  margin: 0;
+}
+
+.grid-table td.contents:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+  filter:alpha(opacity=50);
+  filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0.5);
+  opacity:.50;
+}
+
+.grid-table td.contents {
+  cursor: pointer;
+}
+
+#fill-controls {
+  margin: 15px;
+}
+
+#reactor-area {
+  max-width: 500px;
+  max-height: 500px;
+  overflow: visible;
+}
