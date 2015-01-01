@@ -84,7 +84,7 @@
 
     $(this)
         .html('')
-        .attr('character', selected.data('character'))
+        .data('character', selected.data('character'))
         .append(getTextureImg(selected.data('character')));
   };
 
@@ -92,10 +92,10 @@
     var layout = "";
 
     $('.grid-table td.contents').each(function() {
-      if ($(this).attr('character') === undefined) {
+      if ($(this).data('character') === undefined) {
         layout += 'O';
       } else {
-        layout += $(this).attr('character');
+        layout += $(this).data('character');
       }
     });
 
@@ -131,10 +131,18 @@
     }
 
     return true;
-  }
+  };
 
   var validateReactor = function() {
+    var hasControlRods = $('.grid-table td.contents')
+        .filter(function() { return $(this).data('character') === 'X' })
+        .length > 0;
 
+    if (! hasControlRods) {
+      return "Reactor must have at least one control rod.";
+    }
+
+    return true;
   };
 
   $(function() {
@@ -175,6 +183,7 @@
     $('#simulate').click(function() {
       var reactorArea = $('#reactor-area')
           , params = reactorArea.data()
+          , validationResult = validateReactor()
           , definition = {
             xSize: params.x + 2,
             zSize: params.z + 2,
@@ -183,13 +192,17 @@
             isActivelyCooled: false
           };
 
-      $.getJSON('/api/simulate', {definition: JSON.stringify(definition)})
-          .done(displaySimulationResponse)
-          .fail(function(jqhxr, textStatus, err) {
-            var error = textStatus + ", " + err;
-            $('#error-area').html(error);
-          }
-      );
+      if (validationResult !== true) {
+        $('#error-area').html(validationResult);
+      } else {
+        $.getJSON('/api/simulate', {definition: JSON.stringify(definition)})
+            .done(displaySimulationResponse)
+            .fail(function (jqhxr, textStatus, err) {
+              var error = textStatus + ", " + err;
+              $('#error-area').html(error);
+            }
+        );
+      }
     });
 
     $('.masthead-nav a').click(function() {
