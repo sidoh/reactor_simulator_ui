@@ -9,14 +9,24 @@ body, div, p, a {
 
 #reactor-controls {
   position: fixed;
-  top: 0;
+  top: 105px;
   left: 0;
-  padding: 100px 15px 15px 15px;
+  padding: 15px;
   max-width: 300px;
+}
+
+.masthead {
+  height: 90px;
 }
 
 #controls-grid {
   padding-top: 10px;
+}
+
+#page-container {
+  position: fixed;
+  top: 110px;
+  left: 320px;
 }
 
 .grid-option {
@@ -67,8 +77,7 @@ h4 {
 }
 
 .grid-table {
-  width: 500px;
-  height: 500px;
+  max-width: 900px;
 }
 
 .grid-table, .grid-table td {
@@ -87,6 +96,11 @@ h4 {
 
 .grid-table td.contents {
   cursor: pointer;
+}
+
+.grid-table td .texture {
+  width: 50px;
+  height: 50px;
 }
 
 #fill-controls {
