@@ -100,6 +100,7 @@
   };
 
   var displaySimulationResponse = function(response) {
+    $('#error-area').html('');
     $('li', $('#simulation-results')).each(function() {
       var rawValue = response[$(this).data('for')]
           , roundedValue = Math.round(rawValue * 100) / 100
