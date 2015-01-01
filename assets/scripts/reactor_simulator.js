@@ -149,10 +149,12 @@
             isActivelyCooled: false
           };
 
-      $.getJSON(
-          '/api/simulate',
-          {definition: JSON.stringify(definition)},
-          displaySimulationResponse
+      $.getJSON('/api/simulate', {definition: JSON.stringify(definition)})
+          .done(displaySimulationResponse)
+          .fail(function(jqhxr, textStatus, err) {
+            var error = textStatus + ", " + err;
+            $('#error-area').html(error);
+          }
       );
     });
 

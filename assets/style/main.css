@@ -167,3 +167,7 @@ h4 {
 .ico-fertility {
   background-image: url(../icons/reactivity.gif);
 }
+
+#error-area {
+  color: #f00;
+}
