@@ -7,7 +7,10 @@
     { character: 'X', name: 'Control Rod' },
   ];
 
-  var tmpresponse = {"fuelConsumption":2.5585455894470215,"output":67931.921875,"fuelFertility":4.8164372,"coolantTemperature":20.0,"fuelHeat":2872.277,"reactorHeat":2783.1367,"reactorDefinition":{"xSize":9,"zSize":9,"height":13,"layout":"XXXXXXXXCXCXCXXXXXXXXXCXCXCXXXXXXXXXCXCXCXXXXXXXX","activelyCooled":false}};
+  var MIN_SIZE = 5
+      , MIN_HEIGHT = 3
+      , MAX_SIZE = 32
+      , MAX_HEIGHT = 48;
 
   var showPage = function(id) {
     $('.page')
@@ -110,6 +113,30 @@
     });
   };
 
+  var validateReactorSize = function() {
+    try {
+      var x = parseInt($('#length').val());
+      var z = parseInt($('#width').val());
+      var height = parseInt($('#height').val());
+
+      if (isNaN(x) || isNaN(z) || isNaN(height)) {
+        return "Invalid input";
+      } else if (x < MIN_SIZE || x > MAX_SIZE || z < MIN_SIZE || z > MAX_SIZE) {
+        return "Length/width must be between " + MIN_SIZE + " and " + MAX_SIZE;
+      } else if (height < MIN_HEIGHT || height > MAX_HEIGHT) {
+        return "Height must be between " + MIN_HEIGHT + " and " + MAX_HEIGHT;
+      }
+    } catch (e) {
+      return "Invalid input";
+    }
+
+    return true;
+  }
+
+  var validateReactor = function() {
+
+  };
+
   $(function() {
     $.each(gridOptions, function(i, e) {
       var elmt = $('<div class="grid-option"></div>')
@@ -123,8 +150,14 @@
     $('#new-reactor').click(function() { showPage('reactor-prompt'); })
 
     $('#create-reactor').click(function() {
-      createReactor($('#length').val(), $('#width').val(), $('#height').val());
-      showPage('reactor-design');
+      var validationResult = validateReactorSize();
+
+      if (validationResult === true) {
+        createReactor($('#length').val(), $('#width').val(), $('#height').val());
+        showPage('reactor-design');
+      } else {
+        $('#error-area').html(validationResult);
+      }
     });
 
     $('.grid-option').click(function() {
