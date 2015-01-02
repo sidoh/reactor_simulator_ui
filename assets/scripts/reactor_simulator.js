@@ -269,6 +269,13 @@
     $(window).hashchange(function() {
       if (previousPage != 'reactor-design') {
         parseReactorParams();
+      } else {
+        var params = getHashParams();
+
+        $('#reactor-area')
+            .data('x', params.length)
+            .data('z', params.width)
+            .data('height', params.height);
       }
       previousPage = getHashLocation();
     });
