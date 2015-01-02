@@ -245,6 +245,10 @@
       }
     });
 
+    $('#new-design-cancel').click(function() {
+      window.history.back();
+    });
+
     var parseReactorParams = function() {
       if (getHashLocation() == 'reactor-design') {
         var params = getHashParams();
