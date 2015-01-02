@@ -273,9 +273,9 @@
         var params = getHashParams();
 
         $('#reactor-area')
-            .data('x', parseInt(params.length))
-            .data('z', parseInt(params.width))
-            .data('height', parseInt(params.height));
+            .data('x', params.length)
+            .data('z', params.width)
+            .data('height', params.height);
       }
       previousPage = getHashLocation();
     });
