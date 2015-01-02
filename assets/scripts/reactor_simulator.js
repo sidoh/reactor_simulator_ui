@@ -181,9 +181,10 @@
       $('#controls-grid').append(elmt);
     });
 
-    $('#new-reactor').click(function() { showPage('reactor-prompt'); })
+    $('#new-reactor').click(function() { showPage('reactor-prompt'); });
+    $('#create-reactor').click(function() { $('#reactor-prompt-form').submit(); });
 
-    $('#create-reactor').click(function() {
+    $('#reactor-prompt-form').submit(function() {
       var validationResult = validateReactorSize();
 
       if (validationResult === true) {
@@ -201,6 +202,8 @@
       } else {
         $('#error-area').html(validationResult);
       }
+
+      return false;
     });
 
     $('.grid-option').click(function() {
