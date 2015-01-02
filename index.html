@@ -79,10 +79,16 @@
                 <span class="unit">C</span>
               </li>
 
-              <li data-for="output">
+              <li id="passiveCoolingOutput" data-for="output">
                 <span class="ico ico-energy"></span>
                 <span class="value">-</span>
                 <span class="unit">RF/t</span>
+              </li>
+
+              <li id="activeCoolingOutput" data-for="output">
+                <span class="ico ico-hotFluid"></span>
+                <span class="value">-</span>
+                <span class="unit">mB/t</span>
               </li>
 
               <li data-for="fuelConsumption">
@@ -108,7 +114,7 @@
 
         <div class="inner cover page" id="reactor-prompt">
           <form id="reactor-prompt-form">
-            <div>
+            <div class="r-input-group">
               <h4>Reactor dimensions</h4>
 
               <div class="dim-prompt">
@@ -124,6 +130,14 @@
               <div class="dim-prompt">
                 <label for="height">Height</label>
                 <input type="text" name="height" id="height" value="5"/>
+              </div>
+            </div>
+
+            <div class="r-input-group">
+              <h4>Reactor Properties</h4>
+              <div class="dim-prompt">
+                <input type="checkbox" name="activelyCooled" id="activelyCooled" />
+                <label for="activelyCooled" class="checkbox-label">Actively Cooled</label>
               </div>
             </div>
 

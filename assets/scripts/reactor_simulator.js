@@ -37,16 +37,20 @@
     $('.grid-table .texture').width(cellSize).height(cellSize);
   };
 
-  var createReactor = function(x, z, height) {
+  var createReactor = function(x, z, height, activelyCooled) {
     x = parseInt(x);
     z = parseInt(z);
     height = parseInt(height);
+    activelyCooled = JSON.parse(activelyCooled);
 
     var reactorArea = $('#reactor-area')
         .html('')
-        .data('x', x)
-        .data('z', z)
-        .data('height', height);
+        .data({
+          x: x,
+          z: z,
+          height: height,
+          activelyCooled: activelyCooled
+        });
 
     var gridTable = $('<table class="grid-table"></table>')
 
@@ -74,6 +78,15 @@
 
       gridTable.append(gridRow);
     }
+
+    if (activelyCooled) {
+      $('#passiveCoolingOutput').hide();
+      $('#activeCoolingOutput').show();
+    } else {
+      $('#activeCoolingOutput').hide();
+      $('#passiveCoolingOutput').show();
+    }
+    $('#simulation-results').show();
 
     reactorArea.append(gridTable);
     setSizes();
@@ -190,14 +203,19 @@
       if (validationResult === true) {
         var length = $('#length').val()
             , width = $('#width').val()
-            , height = $('#height').val();
+            , height = $('#height').val()
+            , activelyCooled = $('#activelyCooled').is(':checked');
 
-        createReactor(length, width, height);
+        createReactor(length, width, height, activelyCooled);
+
+        // Prevent double-loading
+        previousPage = 'reactor-design';
 
         showPage('reactor-design', {
           length: length,
           width: width,
-          height: height
+          height: height,
+          activelyCooled: activelyCooled
         });
       } else {
         $('#error-area').html(validationResult);
@@ -229,7 +247,7 @@
             zSize: params.z + 2,
             height: params.height,
             layout: getLayoutStr(),
-            isActivelyCooled: false
+            isActivelyCooled: params.activelyCooled
           };
 
       if (validationResult !== true) {
@@ -249,10 +267,16 @@
       window.history.back();
     });
 
+    $('.checkbox-label').click(function() {
+      var c = $('input[type="checkbox"]', $(this).parent());
+      c.prop('checked', !c.is(':checked'));
+      return false;
+    });
+
     var parseReactorParams = function() {
       if (getHashLocation() == 'reactor-design') {
         var params = getHashParams();
-        createReactor(params.length, params.width, params.height);
+        createReactor(params.length, params.width, params.height, params.activelyCooled);
 
         if (params.layout !== undefined) {
           var gridCells = $('.grid-table td.contents');
