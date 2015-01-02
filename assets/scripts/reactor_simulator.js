@@ -37,15 +37,6 @@
     $('.grid-table .texture').width(cellSize).height(cellSize);
   };
 
-  var showPage = function(id) {
-    $('.page')
-        .hide()
-        .filter(function() { return $(this).attr('id') == id; }).show();
-    $('.masthead-nav li')
-        .removeClass('active')
-        .filter(function() { return $('a', this).data('page') == id }).addClass('active');
-  };
-
   var createReactor = function(x, z, height) {
     x = parseInt(x);
     z = parseInt(z);
@@ -105,10 +96,10 @@
         .html('&nbsp;');
   };
 
-  var processCell = function() {
-    var selected = selectedGridOption();
-
-    console.log(selected);
+  var processCell = function(selected) {
+    if (selected === undefined) {
+      selected = selectedGridOption();
+    }
 
     if (selected.length == 0) {
       $('#error-area').html('Select a material first');
@@ -188,7 +179,6 @@
           .data('name', e.name);
       elmt.append(getTextureImg(e.character));
       $('#controls-grid').append(elmt);
-      console.log(elmt);
     });
 
     $('#new-reactor').click(function() { showPage('reactor-prompt'); })
@@ -197,8 +187,17 @@
       var validationResult = validateReactorSize();
 
       if (validationResult === true) {
-        createReactor($('#length').val(), $('#width').val(), $('#height').val());
-        showPage('reactor-design');
+        var length = $('#length').val()
+            , width = $('#width').val()
+            , height = $('#height').val();
+
+        createReactor(length, width, height);
+
+        showPage('reactor-design', {
+          length: length,
+          width: width,
+          height: height
+        });
       } else {
         $('#error-area').html(validationResult);
       }
@@ -210,10 +209,12 @@
 
     $('body').on('click', '.grid-table td.contents', function() {
       processCell.call(this);
+      updateHashParams({layout: getLayoutStr()});
     });
 
     $('#fill').click(function() {
       $('.grid-table td.contents').each(function() { processCell.call(this); });
+      updateHashParams({layout: getLayoutStr()});
     });
 
     $('#simulate').click(function() {
@@ -241,8 +242,35 @@
       }
     });
 
-    $('.masthead-nav a').click(function() {
-      showPage($(this).data('page'));
+    var parseReactorParams = function() {
+      if (getHashLocation() == 'reactor-design') {
+        var params = getHashParams();
+        createReactor(params.length, params.width, params.height);
+
+        if (params.layout !== undefined) {
+          var gridCells = $('.grid-table td.contents');
+
+          for (var i = 0; i < params.layout.length; i++) {
+            var char = params.layout[i]
+                , gridOption = $('.grid-option').filter(function () {
+                  return $(this).data('character') == char;
+                }).first();
+
+            if (gridOption.length > 0) {
+              processCell.call(gridCells.eq(i), gridOption);
+            }
+          }
+        }
+      }
+    };
+    var previousPage = getHashLocation();
+
+    $(window).load(parseReactorParams);
+    $(window).hashchange(function() {
+      if (previousPage != 'reactor-design') {
+        parseReactorParams();
+      }
+      previousPage = getHashLocation();
     });
   });
 })(jQuery);
