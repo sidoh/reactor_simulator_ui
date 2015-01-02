@@ -87,7 +87,7 @@
       $('#passiveCoolingOutput').show();
     }
     $('#simulation-results').show();
-    $('#simulation-results .value', reactorArea).html('-');
+    $('#simulation-results .value').html('-');
 
     reactorArea.append(gridTable);
     setSizes();
