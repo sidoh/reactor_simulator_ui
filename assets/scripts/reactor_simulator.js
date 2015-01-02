@@ -7,10 +7,35 @@
     { character: 'X', name: 'Control Rod' },
   ];
 
+  // Defines bounds for reactor sizes
   var MIN_SIZE = 5
       , MIN_HEIGHT = 3
       , MAX_SIZE = 32
       , MAX_HEIGHT = 48;
+
+  // Defines bound for graphics sizes
+  var MIN_CELL_SIZE = 20
+      , MAX_CELL_SIZE = 60;
+
+  // Used to dynamically resize cells so that it fits in the viewport
+  var cellSize
+      , maxReactorWidth
+      , maxReactorHeight;
+
+  var setSizes = function () {
+    maxReactorWidth = ($(document).width() - $('#reactor-controls').width() - 100)
+    maxReactorHeight = ($(document).height() - $('.masthead').height() - 100);
+
+    var reactorWidth = $('.grid-table tr:first td').length
+        , reactorHeight = $('.grid-table tr').length
+        , preferredCellWidth = maxReactorWidth / reactorWidth
+        , preferredCellHeight = maxReactorHeight / reactorHeight;
+
+    cellSize = Math.min(preferredCellWidth, preferredCellHeight, MAX_CELL_SIZE);
+    cellSize = Math.max(cellSize, MIN_CELL_SIZE);
+
+    $('.grid-table .texture').width(cellSize).height(cellSize);
+  };
 
   var showPage = function(id) {
     $('.page')
@@ -60,6 +85,7 @@
     }
 
     reactorArea.append(gridTable);
+    setSizes();
   };
 
   var selectGridOption = function(char) {
@@ -82,10 +108,16 @@
   var processCell = function() {
     var selected = selectedGridOption();
 
-    $(this)
-        .html('')
-        .data('character', selected.data('character'))
-        .append(getTextureImg(selected.data('character')));
+    console.log(selected);
+
+    if (selected.length == 0) {
+      $('#error-area').html('Select a material first');
+    } else {
+      $(this)
+          .html('')
+          .data('character', selected.data('character'))
+          .append(getTextureImg(selected.data('character')).width(cellSize).height(cellSize));
+    }
   };
 
   var getLayoutStr = function() {
@@ -146,6 +178,10 @@
   };
 
   $(function() {
+
+    setSizes();
+    $(window).resize(setSizes);
+
     $.each(gridOptions, function(i, e) {
       var elmt = $('<div class="grid-option"></div>')
           .data('character', e.character)
