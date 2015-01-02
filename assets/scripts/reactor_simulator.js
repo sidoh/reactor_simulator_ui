@@ -8,10 +8,10 @@
   ];
 
   // Defines bounds for reactor sizes
-  var MIN_SIZE = 5
-      , MIN_HEIGHT = 3
-      , MAX_SIZE = 32
-      , MAX_HEIGHT = 48;
+  var MIN_SIZE = 1
+      , MIN_HEIGHT = 1
+      , MAX_SIZE = 30
+      , MAX_HEIGHT = 46;
 
   // Defines bound for graphics sizes
   var MIN_CELL_SIZE = 20
@@ -246,7 +246,7 @@
           , definition = {
             xSize: params.x + 2,
             zSize: params.z + 2,
-            height: params.height,
+            height: params.height + 2,
             layout: getLayoutStr(),
             isActivelyCooled: params.activelyCooled
           };

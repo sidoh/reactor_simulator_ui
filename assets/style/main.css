@@ -178,6 +178,7 @@ h4 {
 .r-input-group {
   display: inline-block;
   vertical-align: top;
+  width: 300px;
 }
 
 .r-input-group label.checkbox-label {
@@ -194,4 +195,11 @@ h4 {
 
 #simulation-results {
   display: none;
+}
+
+.info {
+  font-size: 0.75em;
+  font-style: italic;
+  padding: 10px;
+  text-align: left;
 }
