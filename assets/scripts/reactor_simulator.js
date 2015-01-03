@@ -244,8 +244,9 @@
           , params = reactorArea.data()
           , validationResult = validateReactor()
           , definition = {
-            xSize: params.x + 2,
-            zSize: params.z + 2,
+            // Definitions are swapped from how they're interpreted in the simulator code.
+            xSize: params.z + 2,
+            zSize: params.x + 2,
             height: params.height + 2,
             layout: getLayoutStr(),
             isActivelyCooled: params.activelyCooled
