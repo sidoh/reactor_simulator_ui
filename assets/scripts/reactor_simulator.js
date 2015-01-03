@@ -37,14 +37,11 @@
     $('.grid-table .texture').width(cellSize).height(cellSize);
   };
 
-  var createReactor = function(length, width, height, activelyCooled) {
-    length = parseInt(length);
-    width = parseInt(width);
+  var createReactor = function(x, z, height, activelyCooled) {
+    x = parseInt(x);
+    z = parseInt(z);
     height = parseInt(height);
     activelyCooled = JSON.parse(activelyCooled);
-
-    var x = width
-        , z = length;
 
     var reactorArea = $('#reactor-area')
         .html('')
