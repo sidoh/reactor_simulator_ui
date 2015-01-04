@@ -22,6 +22,32 @@
       , maxReactorWidth
       , maxReactorHeight;
 
+  /**
+   * Encode/decode a string using run length encoding. Loosely based from: http://rosettacode.org/wiki/JavaScript
+   */
+  var rlencode = function(input) {
+    return $.map(input.match(/(.)\1*/g), function(substr) {
+      var r = '';
+      if (substr.length > 1) {
+        r += substr.length;
+      }
+      r += substr[0];
+      return r;
+    }).join('');
+  };
+
+  var rldecode = function(encoded) {
+    // Extract tokens from encoded string. E.g., 32E, 12X, F
+    var split = encoded.match(/(\d*.)/g);
+
+    // From each token, append to the output.
+    return $.map(split, function(token) {
+      var tokenParts = token.match(/(\d*)(.)/);
+
+      return new Array(1 + (tokenParts[1] == '' ? 1 : parseInt(tokenParts[1]))).join(tokenParts[2]);
+    }).join('');
+  };
+
   var setSizes = function () {
     maxReactorWidth = ($(document).width() - $('#reactor-controls').width() - 100)
     maxReactorHeight = ($(document).height() - $('.masthead').height() - 100);
@@ -231,12 +257,12 @@
 
     $('body').on('click', '.grid-table td.contents', function() {
       processCell.call(this);
-      updateHashParams({layout: getLayoutStr()});
+      updateHashParams({layout: rlencode(getLayoutStr())});
     });
 
     $('#fill').click(function() {
       $('.grid-table td.contents').each(function() { processCell.call(this); });
-      updateHashParams({layout: getLayoutStr()});
+      updateHashParams({layout: rlencode(getLayoutStr())});
     });
 
     $('#simulate').click(function() {
@@ -281,10 +307,13 @@
         createReactor(params.length, params.width, params.height, params.activelyCooled);
 
         if (params.layout !== undefined) {
+          var decodedLayout = rldecode(params.layout);
+          console.log(decodedLayout);
+
           var gridCells = $('.grid-table td.contents');
 
-          for (var i = 0; i < params.layout.length; i++) {
-            var char = params.layout[i]
+          for (var i = 0; i < decodedLayout.length; i++) {
+            var char = decodedLayout[i]
                 , gridOption = $('.grid-option').filter(function () {
                   return $(this).data('character') == char;
                 }).first();
