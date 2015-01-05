@@ -5,6 +5,7 @@
     { character: 'D', name: 'Diamond Block' },
     { character: 'G', name: 'Graphite Block' },
     { character: 'X', name: 'Control Rod' },
+    { character: 'O', name: 'Air' }
   ];
 
   // Defines bounds for reactor sizes
@@ -120,10 +121,11 @@
   };
 
   var selectGridOption = function(char) {
-    $('.grid-option')
+    var selected = $('.grid-option')
         .removeClass('selected')
         .filter(function() { return $(this).data('character') == char; })
         .addClass('selected');
+    $('#grid-selection').html(selected.data('name'));
   };
 
   var selectedGridOption = function() {
@@ -131,9 +133,14 @@
   };
 
   var getTextureImg = function(character) {
-    return $('<div class="texture"></div>')
-        .css('background-image', 'url(assets/textures/' + character + '.gif)')
+    var elmt = $('<div class="texture"></div>')
         .html('&nbsp;');
+
+    if (character != 'O') {
+      elmt.css('background-image', 'url(assets/textures/' + character + '.gif)');
+    }
+
+    return elmt;
   };
 
   var processCell = function(selected) {
@@ -209,7 +216,6 @@
   };
 
   $(function() {
-
     setSizes();
     $(window).resize(setSizes);
 
