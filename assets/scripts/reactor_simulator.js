@@ -64,11 +64,12 @@
     $('.grid-table .texture').width(cellSize).height(cellSize);
   };
 
-  var createReactor = function(x, z, height, activelyCooled) {
+  var createReactor = function(x, z, height, activelyCooled, controlRodInsertion) {
     x = parseInt(x);
     z = parseInt(z);
     height = parseInt(height);
     activelyCooled = JSON.parse(activelyCooled);
+    controlRodInsertion = parseInt(controlRodInsertion);
 
     var reactorArea = $('#reactor-area')
         .html('')
@@ -76,7 +77,8 @@
           x: x,
           z: z,
           height: height,
-          activelyCooled: activelyCooled
+          activelyCooled: activelyCooled,
+          controlRodInsertion: controlRodInsertion
         });
 
     var gridTable = $('<table class="grid-table"></table>')
@@ -237,9 +239,10 @@
         var length = $('#length').val()
             , width = $('#width').val()
             , height = $('#height').val()
-            , activelyCooled = $('#activelyCooled').is(':checked');
+            , activelyCooled = $('#activelyCooled').is(':checked')
+            , controlRodInsertion = $('#control-rod-insertion').slider('value');
 
-        createReactor(length, width, height, activelyCooled);
+        createReactor(length, width, height, activelyCooled, controlRodInsertion);
 
         // Prevent double-loading
         previousPage = 'reactor-design';
@@ -248,7 +251,8 @@
           length: length,
           width: width,
           height: height,
-          activelyCooled: activelyCooled
+          activelyCooled: activelyCooled,
+          controlRodInsertion: controlRodInsertion
         });
       } else {
         $('#error-area').html(validationResult);
@@ -281,7 +285,8 @@
             zSize: params.x + 2,
             height: params.height + 2,
             layout: getLayoutStr(),
-            isActivelyCooled: params.activelyCooled
+            isActivelyCooled: params.activelyCooled,
+            controlRodInsertion: params.controlRodInsertion
           };
 
       if (validationResult !== true) {
@@ -312,10 +317,23 @@
       return false;
     });
 
+    var updateRodInsertion = function(e, ui) {
+      $('#control-rod-insertion-value').html(ui.value + '%');
+    };
+
+    $('#control-rod-insertion').slider({
+      min: 0,
+      max: 100,
+      value: 0,
+      step: 1,
+      slide: updateRodInsertion,
+      stop: updateRodInsertion
+    });
+
     var parseReactorParams = function() {
       if (getHashLocation() == 'reactor-design') {
         var params = getHashParams();
-        createReactor(params.length, params.width, params.height, params.activelyCooled);
+        createReactor(params.length, params.width, params.height, params.activelyCooled, params.controlRodInsertion);
 
         if (params.layout !== undefined) {
           var decodedLayout = rldecode(params.layout);

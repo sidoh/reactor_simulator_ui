@@ -7,12 +7,18 @@
   <link rel="stylesheet" href="assets/style/bootstrap.min.css">
   <link rel="stylesheet" href="assets/style/bootstrap-theme.min.css">
 
+  <link rel="stylesheet" href="assets/style/jquery-ui.min.css">
+  <link rel="stylesheet" href="assets/style/jquery-ui.structure.min.css">
+  <link rel="stylesheet" href="assets/style/jquery-ui.theme.min.css">
+
   <link rel="stylesheet" href="assets/style/cover.css"/>
   <link rel="stylesheet" href="assets/style/main.css"/>
 
   <script src="assets/scripts/jquery.min.js"></script>
   <script src="assets/scripts/jquery.browser.min.js"></script>
   <script src="assets/scripts/jquery.ba-hashchange.min.js"></script>
+  <script src="assets/scripts/jquery-ui.min.js"></script>
+
   <script src="assets/scripts/bootstrap.min.js"></script>
 
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -153,9 +159,15 @@
 
             <div class="r-input-group">
               <h4>Reactor Properties</h4>
-              <div class="dim-prompt">
+              <div class="input-container">
                 <input type="checkbox" name="activelyCooled" id="activelyCooled" />
                 <label for="activelyCooled" class="checkbox-label">Actively Cooled</label>
+              </div>
+
+              <div class="input-container">
+                <label for="control-rod-insertion">Control Rod Insertion</label>
+                <div id="control-rod-insertion"></div>
+                <span id="control-rod-insertion-value">0%</span>
               </div>
             </div>
 

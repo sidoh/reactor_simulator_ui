@@ -179,6 +179,7 @@ h4 {
   display: inline-block;
   vertical-align: top;
   width: 300px;
+  text-align: left;
 }
 
 .r-input-group label.checkbox-label {
@@ -193,13 +194,31 @@ h4 {
   outline-style:none;/*IE*/
 }
 
+.r-input-group h4 {
+  margin: 10px 0;
+}
+
 #simulation-results {
   display: none;
 }
 
 .info {
+  margin: 10px 0;
   font-size: 0.75em;
   font-style: italic;
-  padding: 10px;
   text-align: left;
+}
+
+.input-container {
+  margin-bottom: 10px;
+}
+
+#control-rod-insertion {
+  width: 130px;
+  margin: 5px 8px 5px 0;
+  display: inline-block;
+}
+
+#control-rod-insertion-value {
+  vertical-align: top;
 }
