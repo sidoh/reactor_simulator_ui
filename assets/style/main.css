@@ -133,6 +133,7 @@ h4 {
 
 #simulation-results ul li {
   text-align: left;
+  min-height: 24px;
 }
 
 #simulation-results .unit, #simulation-results .value {

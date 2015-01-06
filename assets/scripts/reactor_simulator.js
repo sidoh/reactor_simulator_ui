@@ -8,6 +8,9 @@
     { character: 'O', name: 'Air' }
   ];
 
+  // Used for local testing
+  var SAMPLE_RESPONSE = {"fuelConsumption":0.2192493975162506,"output":31835.994140625,"fuelFertility":510.647,"coolantTemperature":20.0,"fuelHeat":750.65656,"reactorHeat":721.741};
+
   // Defines bounds for reactor sizes
   var MIN_SIZE = 1
       , MIN_HEIGHT = 1
@@ -22,6 +25,21 @@
   var cellSize
       , maxReactorWidth
       , maxReactorHeight;
+
+  /**
+   * Add commas to a number. Taken from http://stackoverflow.com/questions/1990512/add-comma-to-numbers-every-three-digits-using-jquery
+   */
+  var addCommas = function(nStr) {
+    nStr += '';
+    var x = nStr.split('.');
+    var x1 = x[0];
+    var x2 = x.length > 1 ? '.' + x[1] : '';
+    var rgx = /(\d+)(\d{3})/;
+    while (rgx.test(x1)) {
+      x1 = x1.replace(rgx, '$1' + ',' + '$2');
+    }
+    return x1 + x2;
+  };
 
   /**
    * Encode/decode a string using run length encoding. Loosely based from: http://rosettacode.org/wiki/JavaScript
@@ -190,6 +208,11 @@
     var blocks = (x + 2) * (z + 2) * (y + 2);
     response['outputPerBlock'] = output / blocks;
     response['outputPerFuelPerBlock'] = fuelEff / blocks;
+
+    $.each(response, function(k, v) {
+      response[k] = addCommas(Math.round(v * 100) / 100);
+    });
+
     return response;
   };
 
@@ -197,11 +220,7 @@
     $('#error-area').html('');
     augmentResponse(response);
     $('li', $('#simulation-results')).each(function() {
-      var rawValue = response[$(this).data('for')]
-          , roundedValue = Math.round(rawValue * 100) / 100
-          ;
-
-      $('.value', this).html(roundedValue);
+      $('.value', this).html(response[$(this).data('for')]);
     });
   };
 
@@ -312,18 +331,23 @@
       if (validationResult !== true) {
         $('#error-area').html(validationResult);
       } else {
-        $.getJSON('/api/simulate', {definition: JSON.stringify(definition)})
-            .done(displaySimulationResponse)
-            .fail(function (jqhxr, textStatus, err) {
-              var error;
-              if (err == 'Bad Gateway') {
-                error = 'API unresponsive. May be restarting with updates.';
-              } else {
-                error = textStatus + ", " + err;
+        if (window.location.origin === 'file://') {
+          displaySimulationResponse(SAMPLE_RESPONSE);
+          $('#error-area').html('This is a mock response. You should not be seeing this.');
+        } else {
+          $.getJSON('/api/simulate', {definition: JSON.stringify(definition)})
+              .done(displaySimulationResponse)
+              .fail(function (jqhxr, textStatus, err) {
+                var error;
+                if (err == 'Bad Gateway') {
+                  error = 'API unresponsive. May be restarting with updates.';
+                } else {
+                  error = textStatus + ", " + err;
+                }
+                $('#error-area').html(error);
               }
-              $('#error-area').html(error);
-            }
-        );
+          );
+        }
       }
     });
 
