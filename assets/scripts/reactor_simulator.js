@@ -178,7 +178,7 @@
   var augmentResponse = function(response) {
     var output = response['output']
     var fuelUse = response['fuelConsumption'];
-    var fuelEff = output / fuel;
+    var fuelEff = output / fuelUse;
     response['outputPerFuel'] = fuelEff;
 
     /* Interior sizes (no casing) */
