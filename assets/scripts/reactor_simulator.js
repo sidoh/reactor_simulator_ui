@@ -290,7 +290,12 @@
         $.getJSON('/api/simulate', {definition: JSON.stringify(definition)})
             .done(displaySimulationResponse)
             .fail(function (jqhxr, textStatus, err) {
-              var error = textStatus + ", " + err;
+              var error;
+              if (err == 'Bad Gateway') {
+                error = 'API unresponsive. May be restarting with updates.';
+              } else {
+                error = textStatus + ", " + err;
+              }
               $('#error-area').html(error);
             }
         );
