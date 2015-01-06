@@ -172,8 +172,28 @@
     return layout;
   };
 
+  /* Adds UI-calculated fields to simulator response. */
+  var augmentResponse = function(response) {
+    var output = response['output']
+    var fuelUse = response['fuelConsumption'];
+    var fuelEff = output / fuel;
+    response['outputPerFuel'] = fuelEff;
+
+    /* Interior sizes (no casing) */
+    var x = $('#length').val();
+    var z = $('#width').val()
+    var y = $('#height').val()
+
+    /* Exterior size (counts casing) */
+    var blocks = (x + 2) * (z + 2) * (y + 2);
+    response['outputPerBlock'] = output / blocks;
+    response['outputPerFuelPerBlock'] = fuelEff / blocks;
+    return response;
+  };
+
   var displaySimulationResponse = function(response) {
     $('#error-area').html('');
+    augmentResponse(response);
     $('li', $('#simulation-results')).each(function() {
       var rawValue = response[$(this).data('for')]
           , roundedValue = Math.round(rawValue * 100) / 100
