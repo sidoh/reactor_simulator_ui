@@ -176,15 +176,15 @@
 
   /* Adds UI-calculated fields to simulator response. */
   var augmentResponse = function(response) {
-    var output = response['output']
+    var output = response['output'];
     var fuelUse = response['fuelConsumption'];
     var fuelEff = output / fuelUse;
     response['outputPerFuel'] = fuelEff;
 
     /* Interior sizes (no casing) */
-    var x = $('#length').val();
-    var z = $('#width').val()
-    var y = $('#height').val()
+    var x = parseInt($('#length').val());
+    var z = parseInt($('#width').val());
+    var y = parseInt($('#height').val());
 
     /* Exterior size (counts casing) */
     var blocks = (x + 2) * (z + 2) * (y + 2);
