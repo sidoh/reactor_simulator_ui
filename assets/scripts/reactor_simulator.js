@@ -127,11 +127,11 @@
     }
 
     if (activelyCooled) {
-      $('#passiveCoolingOutput').hide();
-      $('#activeCoolingOutput').show();
+      $('.passive-only').hide();
+      $('.active-only').show();
     } else {
-      $('#activeCoolingOutput').hide();
-      $('#passiveCoolingOutput').show();
+      $('.active-only').hide();
+      $('.passive-only').show();
     }
     $('#simulation-results').show();
     $('#simulation-results .value').html('-');
@@ -304,10 +304,27 @@
       selectGridOption($(this).data('character'));
     });
 
-    $('body').on('click', '.grid-table td.contents', function() {
-      processCell.call(this);
-      updateHashParams({layout: rlencode(getLayoutStr())});
-    });
+    var dragging = false
+        , stopDragging = function() {
+          dragging = false;
+          updateHashParams({layout: rlencode(getLayoutStr())});
+        };
+
+    $('body')
+        .on('click', '.grid-table td.contents', function () {
+          processCell.call(this);
+          updateHashParams({layout: rlencode(getLayoutStr())});
+        })
+        .on('mousedown', '.grid-table td.contents', function () {
+          dragging = true;
+        })
+        .on('mouseup', '.grid-table', stopDragging)
+        .on('mouseleave', '.grid-table', stopDragging)
+        .on('mouseover', '.grid-table td.contents', function() {
+          if (dragging) {
+            processCell.call(this);
+          }
+        });
 
     $('#fill').click(function() {
       $('.grid-table td.contents').each(function() { processCell.call(this); });

@@ -101,13 +101,13 @@
                 <span class="unit">C</span>
               </li>
 
-              <li id="passiveCoolingOutput" data-for="output">
+              <li id="passiveCoolingOutput" data-for="output" class="passive-only">
                 <span class="ico ico-energy"></span>
                 <span class="value">-</span>
                 <span class="unit">RF/t</span>
               </li>
 
-              <li id="activeCoolingOutput" data-for="output">
+              <li id="activeCoolingOutput" data-for="output" class="active-only">
                 <span class="ico ico-hotFluid"></span>
                 <span class="value">-</span>
                 <span class="unit">mB/t</span>
@@ -129,19 +129,34 @@
             <h4>Efficiency</h4>
 
             <ul>
-              <li data-for="outputPerFuel">
+              <li data-for="outputPerFuel" class="passive-only">
                 <span class="value">-</span>
                 <span class="unit">RF/mB</span>
               </li>
 
-              <li data-for="outputPerBlock">
+              <li data-for="outputPerFuel" class="active-only">
+                <span class="value">-</span>
+                <span class="unit">mB/mB</span>
+              </li>
+
+              <li data-for="outputPerBlock" class="passive-only">
                 <span class="value">-</span>
                 <span class="unit">RF/block</span>
               </li>
 
-              <li data-for="outputPerFuelPerBlock">
+              <li data-for="outputPerBlock" class="active-only">
+                <span class="value">-</span>
+                <span class="unit">mB/block</span>
+              </li>
+
+              <li data-for="outputPerFuelPerBlock" class="passive-only">
                 <span class="value">-</span>
                 <span class="unit">RF/mB/block</span>
+              </li>
+
+              <li data-for="outputPerFuelPerBlock" class="active-only">
+                <span class="value">-</span>
+                <span class="unit">mB/mB/block</span>
               </li>
             </ul>
           </div>
