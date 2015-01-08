@@ -308,23 +308,26 @@
         , stopDragging = function() {
           dragging = false;
           updateHashParams({layout: rlencode(getLayoutStr())});
+          return false;
         };
 
     $('body')
-        .on('click', '.grid-table td.contents', function () {
+        .on('mousedown', '.grid-table td.contents', function () {
+          dragging = true;
           processCell.call(this);
           updateHashParams({layout: rlencode(getLayoutStr())});
         })
-        .on('mousedown', '.grid-table td.contents', function () {
-          dragging = true;
-        })
         .on('mouseup', '.grid-table', stopDragging)
-        .on('mouseleave', '.grid-table', stopDragging)
-        .on('mouseover', '.grid-table td.contents', function() {
-          if (dragging) {
-            processCell.call(this);
-          }
-        });
+        .on('mouseenter', '.grid-table td.contents',
+          function() {
+            if (!dragging) {
+              $(this).addClass('selected');
+            } else {
+              processCell.call(this);
+            }
+          })
+        .on('mouseleave', '.grid-table td.contents', function() { $(this).removeClass('selected'); })
+        .on('mouseleave', '.grid-table', stopDragging);
 
     $('#fill').click(function() {
       $('.grid-table td.contents').each(function() { processCell.call(this); });
@@ -398,8 +401,6 @@
 
         if (params.layout !== undefined) {
           var decodedLayout = rldecode(params.layout);
-          console.log(decodedLayout);
-
           var gridCells = $('.grid-table td.contents');
 
           for (var i = 0; i < decodedLayout.length; i++) {

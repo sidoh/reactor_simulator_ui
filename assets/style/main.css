@@ -101,7 +101,7 @@ h4 {
   margin: 0;
 }
 
-.grid-table td.contents:hover {
+.grid-table td.contents.selected {
   background-color: rgba(0, 0, 0, 0.5);
   filter:alpha(opacity=50);
   filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0.5);
