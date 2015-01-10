@@ -365,6 +365,7 @@
         , stopDragging = function() {
           dragging = false;
           updateHashParams({layout: rlencode(getLayoutStr())});
+          simulate();
           return false;
         };
 
