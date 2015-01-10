@@ -447,9 +447,11 @@
                 }).first();
 
             if (gridOption.length > 0) {
-              processCell.call(gridCells.eq(i), gridOption);
+              processCell.call(gridCells.eq(i), gridOption, false);
             }
           }
+
+          simulate();
         }
       }
     };
