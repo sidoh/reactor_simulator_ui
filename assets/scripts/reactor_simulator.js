@@ -96,7 +96,6 @@
       $('.passive-only').show();
     }
 
-    $('#simulation-results .value').html('-');
     simulate();
   };
 
