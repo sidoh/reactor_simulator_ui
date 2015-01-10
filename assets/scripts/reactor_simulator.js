@@ -86,6 +86,8 @@
     var reactor = $('#reactor-area');
     reactor.data($.extend(reactor.data(), params));
 
+    delete params['x'];
+    delete params['z'];
     updateHashParams(params);
 
     if (reactor.data('activelyCooled')) {
