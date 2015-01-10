@@ -171,9 +171,13 @@
     return elmt;
   };
 
-  var processCell = function(selected) {
+  var processCell = function(selected, update) {
     if (selected === undefined) {
       selected = selectedGridOption();
+    }
+
+    if (update === undefined) {
+      update = true;
     }
 
     if (selected.length == 0) {
@@ -183,7 +187,10 @@
           .html('')
           .data('character', selected.data('character'))
           .append(getTextureImg(selected.data('character')).width(cellSize).height(cellSize));
-      simulate();
+
+      if (update) {
+        simulate();
+      }
     }
   };
 
@@ -373,15 +380,16 @@
             if (!dragging) {
               $(this).addClass('selected');
             } else {
-              processCell.call(this);
+              processCell.call(this, false);
             }
           })
         .on('mouseleave', '.grid-table td.contents', function() { $(this).removeClass('selected'); })
         .on('mouseleave', '.grid-table', stopDragging);
 
     $('#fill').click(function() {
-      $('.grid-table td.contents').each(function() { processCell.call(this); });
+      $('.grid-table td.contents').each(function() { processCell.call(this, false); });
       updateHashParams({layout: rlencode(getLayoutStr())});
+      simulate();
     });
 
     $('#simulate').click(simulate);
