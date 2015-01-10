@@ -4,6 +4,7 @@
     { character: 'E', name: 'Liquid Ender' },
     { character: 'D', name: 'Diamond Block' },
     { character: 'G', name: 'Graphite Block' },
+    { character: 'R', name: 'Destabilized Redstone' },
     { character: 'X', name: 'Control Rod' },
     { character: 'O', name: 'Air' }
   ];
