@@ -434,7 +434,7 @@
 
         $('#control-rod-insertion').slider('value', params.controlRodInsertion);
         $('#control-rod-insertion-value').html(params.controlRodInsertion + '%');
-        $('#activelyCooled').prop('checked', params.activelyCooled);
+        $('#activelyCooled').prop('checked', JSON.parse(params.activelyCooled));
 
         if (params.layout !== undefined) {
           var decodedLayout = rldecode(params.layout);
