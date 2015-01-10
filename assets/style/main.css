@@ -11,26 +11,30 @@ a {
   color: #ccc;
 }
 
+.content-wrapper {
+  margin-top: 120px;
+  vertical-align: top;
+}
+
 #reactor-controls {
-  position: fixed;
-  top: 105px;
-  left: 0;
-  padding: 15px;
+  padding: 0 15px;
   max-width: 300px;
+  box-sizing: border-box;
+  float: left;
 }
 
 .masthead {
   height: 90px;
+  background-color: rgba(51,51,51,0.7);
+  z-index: 999;
+  width: 100%;
 }
 
 #controls-grid {
-  padding-top: 10px;
 }
 
 #page-container {
-  position: fixed;
-  top: 110px;
-  left: 320px;
+  margin-left: 320px;
 }
 
 .page {
@@ -231,4 +235,54 @@ h4 {
   -ms-user-select: none;
   user-select: none;
   outline-style:none;/*IE*/
+}
+
+.tab-controls {
+  list-style: none;
+  text-align: left;
+  border-bottom: 1px solid #999;
+  padding: 0;
+  margin: 0 0 10px 0;
+}
+
+.tab-controls li {
+  display: inline-block;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.tab-controls li.active {
+  background-color: rgb(80,80,80);
+}
+
+.tab-controls li:hover {
+  background-color: rgb(80,80,80);
+}
+
+.tab-controls li a {
+  text-decoration: none;
+}
+
+.tab:not(.active) {
+  display: none;
+}
+
+.tab {
+  width: 270px;
+}
+
+#controls-tabs {
+  height: 270px;
+}
+
+.loading-animation {
+  background: url(../icons/loading.gif) no-repeat;
+  background-size: contain;
+  width: 16px;
+  height: 6px;
+  display: none;
+}
+
+.loading-animation.simulation {
+  float: right;
 }
