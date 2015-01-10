@@ -82,6 +82,23 @@
     $('.grid-table .texture').width(cellSize).height(cellSize);
   };
 
+  var updateReactor = function(params) {
+    var reactor = $('#reactor-area');
+    reactor.data($.extend(reactor.data(), params));
+
+    updateHashParams(params);
+
+    if (reactor.data('activelyCooled')) {
+      $('.passive-only').hide();
+      $('.active-only').show();
+    } else {
+      $('.active-only').hide();
+      $('.passive-only').show();
+    }
+
+    simulate();
+  };
+
   var createReactor = function(x, z, height, activelyCooled, controlRodInsertion) {
     x = parseInt(x);
     z = parseInt(z);
@@ -89,15 +106,15 @@
     activelyCooled = JSON.parse(activelyCooled);
     controlRodInsertion = parseInt(controlRodInsertion);
 
-    var reactorArea = $('#reactor-area')
-        .html('')
-        .data({
-          x: x,
-          z: z,
-          height: height,
-          activelyCooled: activelyCooled,
-          controlRodInsertion: controlRodInsertion
-        });
+    updateReactor({
+      x: x,
+      z: z,
+      height: height,
+      activelyCooled: activelyCooled,
+      controlRodInsertion: controlRodInsertion
+    });
+
+    var reactorArea = $('#reactor-area').html('');
 
     var gridTable = $('<table class="grid-table"></table>')
 
@@ -125,16 +142,7 @@
 
       gridTable.append(gridRow);
     }
-
-    if (activelyCooled) {
-      $('.passive-only').hide();
-      $('.active-only').show();
-    } else {
-      $('.active-only').hide();
-      $('.passive-only').show();
-    }
     $('#simulation-results').show();
-    $('#simulation-results .value').html('-');
 
     reactorArea.append(gridTable);
     setSizes();
@@ -163,9 +171,13 @@
     return elmt;
   };
 
-  var processCell = function(selected) {
-    if (selected === undefined) {
+  var processCell = function(selected, update) {
+    if (selected === undefined || selected === null) {
       selected = selectedGridOption();
+    }
+
+    if (update === undefined || update === null) {
+      update = true;
     }
 
     if (selected.length == 0) {
@@ -175,6 +187,10 @@
           .html('')
           .data('character', selected.data('character'))
           .append(getTextureImg(selected.data('character')).width(cellSize).height(cellSize));
+
+      if (update) {
+        simulate();
+      }
     }
   };
 
@@ -222,6 +238,7 @@
     $('li', $('#simulation-results')).each(function() {
       $('.value', this).html(response[$(this).data('for')]);
     });
+    $('.loading-animation.simulation').hide();
   };
 
   var validateReactorSize = function() {
@@ -254,6 +271,46 @@
     }
 
     return true;
+  };
+
+  var simulate = function() {
+    var reactorArea = $('#reactor-area')
+        , params = reactorArea.data()
+        , validationResult = validateReactor()
+        , definition = {
+          // Definitions are swapped from how they're interpreted in the simulator code.
+          xSize: params.z + 2,
+          zSize: params.x + 2,
+          height: params.height + 2,
+          layout: getLayoutStr(),
+          isActivelyCooled: params.activelyCooled,
+          controlRodInsertion: params.controlRodInsertion
+        };
+
+    if (validationResult !== true) {
+      $('#error-area').html(validationResult);
+    } else {
+      var loading = $('.loading-animation.simulation').show();
+
+      if (window.location.origin === 'file://') {
+        displaySimulationResponse(SAMPLE_RESPONSE);
+        $('#error-area').html('This is a mock response. You should not be seeing this.');
+      } else {
+        $.getJSON('/api/simulate', {definition: JSON.stringify(definition)})
+            .done(displaySimulationResponse)
+            .fail(function (jqhxr, textStatus, err) {
+              var error;
+              if (err == 'Bad Gateway') {
+                error = 'API unresponsive. May be restarting with updates.';
+              } else {
+                error = textStatus + ", " + err;
+              }
+              $('#error-area').html(error);
+              loading.hide();
+            }
+        );
+      }
+    }
   };
 
   $(function() {
@@ -308,6 +365,7 @@
         , stopDragging = function() {
           dragging = false;
           updateHashParams({layout: rlencode(getLayoutStr())});
+          simulate();
           return false;
         };
 
@@ -323,61 +381,33 @@
             if (!dragging) {
               $(this).addClass('selected');
             } else {
-              processCell.call(this);
+              processCell.call(this, null, false);
             }
           })
         .on('mouseleave', '.grid-table td.contents', function() { $(this).removeClass('selected'); })
         .on('mouseleave', '.grid-table', stopDragging);
 
     $('#fill').click(function() {
-      $('.grid-table td.contents').each(function() { processCell.call(this); });
+      $('.grid-table td.contents').each(function() { processCell.call(this, null, false); });
       updateHashParams({layout: rlencode(getLayoutStr())});
+      simulate();
     });
 
-    $('#simulate').click(function() {
-      var reactorArea = $('#reactor-area')
-          , params = reactorArea.data()
-          , validationResult = validateReactor()
-          , definition = {
-            // Definitions are swapped from how they're interpreted in the simulator code.
-            xSize: params.z + 2,
-            zSize: params.x + 2,
-            height: params.height + 2,
-            layout: getLayoutStr(),
-            isActivelyCooled: params.activelyCooled,
-            controlRodInsertion: params.controlRodInsertion
-          };
-
-      if (validationResult !== true) {
-        $('#error-area').html(validationResult);
-      } else {
-        if (window.location.origin === 'file://') {
-          displaySimulationResponse(SAMPLE_RESPONSE);
-          $('#error-area').html('This is a mock response. You should not be seeing this.');
-        } else {
-          $.getJSON('/api/simulate', {definition: JSON.stringify(definition)})
-              .done(displaySimulationResponse)
-              .fail(function (jqhxr, textStatus, err) {
-                var error;
-                if (err == 'Bad Gateway') {
-                  error = 'API unresponsive. May be restarting with updates.';
-                } else {
-                  error = textStatus + ", " + err;
-                }
-                $('#error-area').html(error);
-              }
-          );
-        }
-      }
-    });
+    $('#simulate').click(simulate);
 
     $('#new-design-cancel').click(function() {
       window.history.back();
     });
 
+    $('#activelyCooled').change(function() {
+      var activelyCooled = $(this).prop('checked');
+      updateReactor({activelyCooled: activelyCooled });
+    });
+
     $('.checkbox-label').click(function() {
       var c = $('input[type="checkbox"]', $(this).parent());
       c.prop('checked', !c.is(':checked'));
+      c.trigger('change');
       return false;
     });
 
@@ -391,13 +421,20 @@
       value: 0,
       step: 1,
       slide: updateRodInsertion,
-      stop: updateRodInsertion
+      stop: function (e, ui) {
+        updateRodInsertion.call(this, e, ui);
+        updateReactor({controlRodInsertion: ui.value});
+      }
     });
 
     var parseReactorParams = function() {
       if (getHashLocation() == 'reactor-design') {
         var params = getHashParams();
         createReactor(params.length, params.width, params.height, params.activelyCooled, params.controlRodInsertion);
+
+        $('#control-rod-insertion').slider('value', params.controlRodInsertion);
+        $('#control-rod-insertion-value').html(params.controlRodInsertion + '%');
+        $('#activelyCooled').prop('checked', JSON.parse(params.activelyCooled));
 
         if (params.layout !== undefined) {
           var decodedLayout = rldecode(params.layout);
@@ -410,9 +447,11 @@
                 }).first();
 
             if (gridOption.length > 0) {
-              processCell.call(gridCells.eq(i), gridOption);
+              processCell.call(gridCells.eq(i), gridOption, false);
             }
           }
+
+          simulate();
         }
       }
     };

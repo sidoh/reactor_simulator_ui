@@ -1,3 +1,8 @@
+
+// --
+// Hash navigation stuff
+// --
+
 var showPage
     , getHashLocation
     , updateHashParams
@@ -87,5 +92,29 @@ var showPage
     });
 
     handleNav();
+  });
+})(jQuery);
+
+// --
+// Tab stuff
+// --
+
+(function($) {
+  $(function() {
+    $('.tab-controls li').click(function() {
+      var container = $(this).closest('.tab-container')
+          , tabName = $(this).data('for');
+      console.log(this);
+
+      $('.tab', container)
+          .removeClass('active')
+          .filter(function() { console.log(this); return $(this).data('tab-name') == tabName; })
+          .addClass('active');
+
+      $('li', $(this).parent()).removeClass('active');
+      $(this).addClass('active');
+
+      return false;
+    });
   });
 })(jQuery);
