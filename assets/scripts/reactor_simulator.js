@@ -172,11 +172,11 @@
   };
 
   var processCell = function(selected, update) {
-    if (selected === undefined) {
+    if (selected === undefined || selected === null) {
       selected = selectedGridOption();
     }
 
-    if (update === undefined) {
+    if (update === undefined || update === null) {
       update = true;
     }
 
@@ -380,14 +380,14 @@
             if (!dragging) {
               $(this).addClass('selected');
             } else {
-              processCell.call(this, false);
+              processCell.call(this, null, false);
             }
           })
         .on('mouseleave', '.grid-table td.contents', function() { $(this).removeClass('selected'); })
         .on('mouseleave', '.grid-table', stopDragging);
 
     $('#fill').click(function() {
-      $('.grid-table td.contents').each(function() { processCell.call(this, false); });
+      $('.grid-table td.contents').each(function() { processCell.call(this, null, false); });
       updateHashParams({layout: rlencode(getLayoutStr())});
       simulate();
     });
