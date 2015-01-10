@@ -289,6 +289,7 @@
 
     if (validationResult !== true) {
       $('#error-area').html(validationResult);
+      $('#simulation-results .value').html('-');
     } else {
       var loading = $('.loading-animation.simulation').show();
 
