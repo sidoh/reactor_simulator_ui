@@ -9,6 +9,40 @@
     { character: 'O', name: 'Air' }
   ];
 
+  var materials = {
+    redstone: { key: 'redstone', name: 'Redstone' },
+    enderPearl: { key: 'enderPearl', name: 'Ender Pearl' },
+    diamond: { key: 'diamond', name: 'Diamond' },
+    cryotheum: { key: 'cryotheum', name: 'Cryotheum Dust' },
+    snowball: { key: 'snowball', name: 'Snowball' },
+    niter: { key: 'niter', name: 'Niter' },
+    sandstone: { key: 'sandstone', name: 'Sandstone' },
+    blizzPowder: { key: 'blizzPowder', name: 'Blizz Powder' },
+    graphiteBar: { key: 'graphiteBar', name: 'Graphite Bar' },
+    charcoal: { key: 'charcoal', name: 'Charcoal' },
+    gravel: { key: 'gravel', name: 'Gravel' },
+    ironIngot: { key: 'ironIngot', name: 'Iron Ingot' },
+    yelloriumIngot: { key: 'yelloriumIngot', name: 'Yellorium Ingot' },
+    fuelRod: { key: 'fuelRod', name: 'Yellorium Fuel Rod' }
+  };
+
+  var materialCosts = {
+    cryotheum: [[materials.blizzPowder, 1], [materials.redstone, 1], [materials.snowball, 1], [materials.niter, 1]],
+    blizzPowder: [[materials.snowball, 1], [materials.redstone, 40]],
+    niter: [[materials.sandstone, 10]], // expected -- generated randomly
+    graphiteBar: [[materials.charcoal, 1], [materials.gravel, 2]],
+    fuelRod: [[materials.ironIngot, 6], [materials.graphiteBar, 2], [materials.yelloriumIngot, 1]]
+  };
+
+  var reactorContentsMaterials = {
+    R: [[materials.redstone, 40]],
+    E: [[materials.enderPearl, 4]],
+    D: [[materials.diamond, 9]],
+    C: [[materials.cryotheum, 5]], // is actually 10, but recipe for cryotheum dust here yields 1 instead of 2
+    G: [[materials.graphiteBar, 9]],
+    X: [[materials.fuelRod, 1]]
+  };
+
   // Used for local testing
   var SAMPLE_RESPONSE = {"fuelConsumption":0.2192493975162506,"output":31835.994140625,"fuelFertility":510.647,"coolantTemperature":20.0,"fuelHeat":750.65656,"reactorHeat":721.741};
 
@@ -315,6 +349,67 @@
         );
       }
     }
+    calculateCost();
+  };
+
+  var calculateCost = function() {
+    var params = $('#reactor-area').data()
+        , height = params.height
+        , materialCounts = {}
+        , totalCosts = [];
+
+    $('.grid-table td.contents').each(function(i, e) {
+      var c = $(e).data('character');
+      materialCounts[c] |= 0;
+      materialCounts[c]++;
+    });
+
+    $.each(materialCounts, function(k,v) {
+      var material = $('.grid-option')
+          .filter(function() { return $(this).data('character') == k; })
+          .data(),
+          c = {
+            material: material,
+            count: v*height
+          };
+      c.children = calculateInteriorCost(c);
+      totalCosts.push(c);
+    });
+    console.log(totalCosts);
+  };
+
+  // Returns an array of objects, each with:
+  //   - material
+  //   - count
+  //   - children materials
+  var calculateInteriorCost = function(cost) {
+    var materialCost = [];
+    $.each(reactorContentsMaterials[cost.material.character], function (i, e) {
+      var c = {
+        material: e[0],
+        count: e[1]*cost.count
+      };
+      c.children = calculateMaterialCost(c);
+      materialCost.push(c);
+    });
+    return materialCost;
+  };
+
+  var calculateMaterialCost = function(cost) {
+    var materialCost = [];
+
+    if (materialCosts[cost.material.key]) {
+      $.each(materialCosts[cost.material.key], function (i, e) {
+        var c = {
+          material: e[0],
+          count: e[1] * cost.count
+        };
+        calculateMaterialCost(c);
+        materialCost.push(c);
+      });
+    }
+
+    return materialCost;
   };
 
   $(function() {
