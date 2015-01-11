@@ -62,7 +62,8 @@
 
   var modpacks = {
     defaults: { name: 'Defaults', key: 'defaults' },
-    direwolf20: { name: 'Direwolf20', key: 'direwolf20' }
+    direwolf20: { name: 'Direwolf20', key: 'direwolf20' },
+    btp: { name: 'BTP', key: 'btp' }
   };
 
   var makeConfig = function(fuelUsageMultiplier, powerProductionMultiplier) {
@@ -74,7 +75,8 @@
 
   var modpackConfigs = {
         defaults: makeConfig(1.0, 1.0),
-        direwolf20: makeConfig(10.0, 1.0) // dw20 10x's fuel usage
+        direwolf20: makeConfig(10.0, 1.0), // dw20 10x's fuel usage
+        btp: makeConfig(1.3, 0.7)
       },
       modpackConfig = modpackConfigs.defaults;
 
