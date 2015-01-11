@@ -116,7 +116,7 @@ var showPage
       return false;
     });
 
-    $('.toggle-modes > li').click(function() {
+    $('body').on('click', '.toggle-modes > li', function() {
       var parent = $(this).parent()
           .trigger('modeChange', $(this).data('option'));
       $('li', parent).removeClass('active');

@@ -37,6 +37,7 @@
     };
   };
 
+  // Crafting recipes for various materials
   var materialCosts = {
     cryotheum: makeRecipe(2, [[materials.blizzPowder, 1], [materials.niter, 1], [materials.redstone, 1], [materials.snowball, 1]]),
     blizzPowder: makeRecipe(1, [[materials.redstone, 40], [materials.snowball, 1]]),
@@ -49,6 +50,7 @@
     controlRod: makeRecipe(1, [[materials.graphiteBar, 3], [materials.reactorCasing, 4], [materials.redstone, 1], [materials.yelloriumIngot, 1]])
   };
 
+  // Reactor interiors -> crafting ingredients
   var reactorContentsMaterials = {
     R: [[materials.redstone, 40]],
     E: [[materials.enderPearl, 4]],
@@ -57,6 +59,24 @@
     G: [[materials.graphiteBar, 9]],
     X: materialCosts.fuelRod.ingredients
   };
+
+  var modpacks = {
+    defaults: { name: 'Defaults', key: 'defaults' },
+    direwolf20: { name: 'Direwolf20', key: 'direwolf20' }
+  };
+
+  var makeConfig = function(fuelUsageMultiplier, powerProductionMultiplier) {
+    return {
+      fuelUsageMultiplier: fuelUsageMultiplier,
+      powerProductionMultiplier: powerProductionMultiplier
+    };
+  };
+
+  var modpackConfigs = {
+        defaults: makeConfig(1.0, 1.0),
+        direwolf20: makeConfig(10.0, 1.0) // dw20 10x's fuel usage
+      },
+      modpackConfig = modpackConfigs.defaults;
 
   // Used for local testing
   var SAMPLE_RESPONSE = {"fuelConsumption":0.2192493975162506,"output":31835.994140625,"fuelFertility":510.647,"coolantTemperature":20.0,"fuelHeat":750.65656,"reactorHeat":721.741};
@@ -269,10 +289,17 @@
 
   /* Adds UI-calculated fields to simulator response. */
   var augmentResponse = function(response) {
-    var output = response['output'];
-    var fuelUse = response['fuelConsumption'];
+    response = $.extend({}, response);
+
+    // Apply modpack modifiers
+    response.output *= modpackConfig.powerProductionMultiplier;
+    response.fuelConsumption *= modpackConfig.fuelUsageMultiplier;
+
+    var output = response.output;
+    var fuelUse = response.fuelConsumption;
     var fuelEff = output / fuelUse;
-    response['outputPerFuel'] = fuelEff;
+
+    response.outputPerFuel = output / fuelUse;
 
     /* Interior sizes (no casing) */
     var x = parseInt($('#length').val());
@@ -281,8 +308,8 @@
 
     /* Exterior size (counts casing) */
     var blocks = (x + 2) * (z + 2) * (y + 2);
-    response['outputPerBlock'] = output / blocks;
-    response['outputPerFuelPerBlock'] = fuelEff / blocks;
+    response.outputPerBlock = output / blocks;
+    response.outputPerFuelPerBlock = fuelEff / blocks;
 
     $.each(response, function(k, v) {
       response[k] = addCommas(Math.round(v * 100) / 100);
@@ -293,7 +320,7 @@
 
   var displaySimulationResponse = function(response) {
     $('#error-area').html('');
-    augmentResponse(response);
+    response = augmentResponse(response);
     $('li', $('#simulation-results')).each(function() {
       $('.value', this).html(response[$(this).data('for')]);
     });
@@ -615,6 +642,25 @@
       $('#controls-grid').append(elmt);
     });
 
+    $.each(modpackConfigs, function(k, config) {
+      var modpack = modpacks[k]
+          , elem = $('<li></li>')
+              .data('option', modpack.key)
+              .html(modpack.name);
+
+      if (modpack == modpacks.defaults) {
+        elem.addClass('active');
+      }
+
+      $('#modpack').append(elem);
+    });
+
+    $('#modpack').on('modeChange', function(e, option) {
+      modpackConfig = modpackConfigs[option];
+      updateHashParams({modpack: option});
+      simulate();
+    });
+
     $('#new-reactor').click(function() { showPage('reactor-prompt'); });
     $('#create-reactor').click(function() { $('#reactor-prompt-form').submit(); });
 
@@ -734,8 +780,16 @@
     });
 
     var parseReactorParams = function() {
+      var params = getHashParams();
+      if (params.modpack && modpackConfigs[params.modpack]) {
+        modpackConfig = modpackConfigs[params.modpack];
+        $('#modpack > li')
+            .removeClass('active')
+            .filter(function() { return $(this).data('option') == params.modpack; })
+            .addClass('active');
+      }
+
       if (getHashLocation() == 'reactor-design') {
-        var params = getHashParams();
         createReactor(params.length, params.width, params.height, params.activelyCooled, params.controlRodInsertion);
 
         $('#control-rod-insertion').slider('value', params.controlRodInsertion);
