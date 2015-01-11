@@ -23,7 +23,8 @@
     gravel: { key: 'gravel', name: 'Gravel' },
     ironIngot: { key: 'ironIngot', name: 'Iron Ingot' },
     yelloriumIngot: { key: 'yelloriumIngot', name: 'Yellorium Ingot' },
-    fuelRod: { key: 'fuelRod', name: 'Yellorium Fuel Rod' }
+    fuelRod: { key: 'fuelRod', name: 'Yellorium Fuel Rod' },
+    sand: { key: 'sand', name: 'Sand' }
   };
 
   var materialCosts = {
@@ -31,7 +32,8 @@
     blizzPowder: [[materials.snowball, 1], [materials.redstone, 40]],
     niter: [[materials.sandstone, 10]], // expected -- generated randomly
     graphiteBar: [[materials.charcoal, 1], [materials.gravel, 2]],
-    fuelRod: [[materials.ironIngot, 6], [materials.graphiteBar, 2], [materials.yelloriumIngot, 1]]
+    fuelRod: [[materials.ironIngot, 6], [materials.graphiteBar, 2], [materials.yelloriumIngot, 1]],
+    sandstone: [[materials.sand, 4]]
   };
 
   var reactorContentsMaterials = {
@@ -370,12 +372,41 @@
           .data(),
           c = {
             material: material,
+            icon: 'textures/' + material.character + '.gif',
             count: v*height
           };
       c.children = calculateInteriorCost(c);
       totalCosts.push(c);
     });
-    console.log(totalCosts);
+
+    $('#costs-area')
+        .html('')
+        .append(renderCosts($('<ul></ul>'), totalCosts));
+  };
+
+  var renderCosts = function(base, costs) {
+    $.each(costs, function(i, e) {
+      var elem = $('<li></li>');
+      var icon = $('<div></div>')
+          .addClass('texture')
+          .css({backgroundImage: 'url(assets/' + e.icon + ')' });
+      elem
+          .append(icon)
+          .append(
+            $('<span></span>')
+                .addClass('material-label')
+                .append(e.material.name + ' (' + e.count + ')')
+          );
+
+      if (e.children && e.children.length > 0) {
+        var childrenBase = $('<ul></ul>');
+        renderCosts(childrenBase, e.children);
+        elem.append(childrenBase);
+      }
+
+      base.append(elem);
+    });
+    return base;
   };
 
   // Returns an array of objects, each with:
@@ -387,6 +418,7 @@
     $.each(reactorContentsMaterials[cost.material.character], function (i, e) {
       var c = {
         material: e[0],
+        icon: 'icons/' + e[0].key + '.gif',
         count: e[1]*cost.count
       };
       c.children = calculateMaterialCost(c);
@@ -402,14 +434,38 @@
       $.each(materialCosts[cost.material.key], function (i, e) {
         var c = {
           material: e[0],
+          icon: 'icons/' + e[0].key + '.gif',
           count: e[1] * cost.count
         };
-        calculateMaterialCost(c);
+        c.children = calculateMaterialCost(c);
         materialCost.push(c);
       });
     }
 
     return materialCost;
+  };
+
+  var collapseCosts = function(costs) {
+    var collapsedCosts = {}
+        , addCosts = function(e) {
+          if (!collapsedCosts[e.material.key]) {
+            collapsedCosts[e.material.key] = e;
+          } else {
+            collapsedCosts[e.material.key].count += e.count;
+          }
+        };
+
+    $.each(costs, function(i, e) {
+      if (e.children && e.children.length > 0) {
+        $.each(collapseCosts(e.children), function(i, child) {
+          addCosts(child);
+        });
+      } else {
+        addCosts(e);
+      }
+    });
+
+    return collapsedCosts;
   };
 
   $(function() {

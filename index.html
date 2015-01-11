@@ -99,78 +99,85 @@
           </div>
 
           <div id="simulation-results">
-            <div class="tab-controler">
+            <div class="tab-container">
               <ol class="tab-controls">
                 <li class="active" data-for="output">Results</li>
+                <li data-for="costs">Costs</li>
               </ol>
 
-              <div class="loading-animation simulation"></div>
+              <div class="tab active" data-tab-name="output">
+                <div class="loading-animation simulation"></div>
 
-              <ul>
-                <li data-for="fuelHeat">
-                  <span class="ico ico-temperature"></span>
-                  <span class="value">-</span>
-                  <span class="unit">C</span>
-                </li>
+                <ul>
+                  <li data-for="fuelHeat">
+                    <span class="ico ico-temperature"></span>
+                    <span class="value">-</span>
+                    <span class="unit">C</span>
+                  </li>
 
-                <li id="passiveCoolingOutput" data-for="output" class="passive-only">
-                  <span class="ico ico-energy"></span>
-                  <span class="value">-</span>
-                  <span class="unit">RF/t</span>
-                </li>
+                  <li id="passiveCoolingOutput" data-for="output" class="passive-only">
+                    <span class="ico ico-energy"></span>
+                    <span class="value">-</span>
+                    <span class="unit">RF/t</span>
+                  </li>
 
-                <li id="activeCoolingOutput" data-for="output" class="active-only">
-                  <span class="ico ico-hotFluid"></span>
-                  <span class="value">-</span>
-                  <span class="unit">mB/t</span>
-                </li>
+                  <li id="activeCoolingOutput" data-for="output" class="active-only">
+                    <span class="ico ico-hotFluid"></span>
+                    <span class="value">-</span>
+                    <span class="unit">mB/t</span>
+                  </li>
 
-                <li data-for="fuelConsumption">
-                  <span class="ico ico-consumption"></span>
-                  <span class="value">-</span>
-                  <span class="unit">mB/t</span>
-                </li>
+                  <li data-for="fuelConsumption">
+                    <span class="ico ico-consumption"></span>
+                    <span class="value">-</span>
+                    <span class="unit">mB/t</span>
+                  </li>
 
-                <li data-for="fuelFertility">
-                  <span class="ico ico-fertility"></span>
-                  <span class="value">-</span>
-                  <span class="unit">%</span>
-                </li>
-              </ul>
+                  <li data-for="fuelFertility">
+                    <span class="ico ico-fertility"></span>
+                    <span class="value">-</span>
+                    <span class="unit">%</span>
+                  </li>
+                </ul>
 
-              <h4>Efficiency</h4>
+                <h4>Efficiency</h4>
 
-              <ul>
-                <li data-for="outputPerFuel" class="passive-only">
-                  <span class="value">-</span>
-                  <span class="unit">RF/mB</span>
-                </li>
+                <ul>
+                  <li data-for="outputPerFuel" class="passive-only">
+                    <span class="value">-</span>
+                    <span class="unit">RF/mB</span>
+                  </li>
 
-                <li data-for="outputPerFuel" class="active-only">
-                  <span class="value">-</span>
-                  <span class="unit">mB/mB</span>
-                </li>
+                  <li data-for="outputPerFuel" class="active-only">
+                    <span class="value">-</span>
+                    <span class="unit">mB/mB</span>
+                  </li>
 
-                <li data-for="outputPerBlock" class="passive-only">
-                  <span class="value">-</span>
-                  <span class="unit">RF/block</span>
-                </li>
+                  <li data-for="outputPerBlock" class="passive-only">
+                    <span class="value">-</span>
+                    <span class="unit">RF/block</span>
+                  </li>
 
-                <li data-for="outputPerBlock" class="active-only">
-                  <span class="value">-</span>
-                  <span class="unit">mB/block</span>
-                </li>
+                  <li data-for="outputPerBlock" class="active-only">
+                    <span class="value">-</span>
+                    <span class="unit">mB/block</span>
+                  </li>
 
-                <li data-for="outputPerFuelPerBlock" class="passive-only">
-                  <span class="value">-</span>
-                  <span class="unit">RF/mB/block</span>
-                </li>
+                  <li data-for="outputPerFuelPerBlock" class="passive-only">
+                    <span class="value">-</span>
+                    <span class="unit">RF/mB/block</span>
+                  </li>
 
-                <li data-for="outputPerFuelPerBlock" class="active-only">
-                  <span class="value">-</span>
-                  <span class="unit">mB/mB/block</span>
-                </li>
-              </ul>
+                  <li data-for="outputPerFuelPerBlock" class="active-only">
+                    <span class="value">-</span>
+                    <span class="unit">mB/mB/block</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="tab" data-tab-name="costs">
+                <div id="costs-area"></div>
+              </div>
             </div>
           </div>
 

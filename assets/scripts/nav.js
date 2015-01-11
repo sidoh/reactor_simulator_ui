@@ -104,11 +104,10 @@ var showPage
     $('.tab-controls li').click(function() {
       var container = $(this).closest('.tab-container')
           , tabName = $(this).data('for');
-      console.log(this);
 
       $('.tab', container)
           .removeClass('active')
-          .filter(function() { console.log(this); return $(this).data('tab-name') == tabName; })
+          .filter(function() { return $(this).data('tab-name') == tabName; })
           .addClass('active');
 
       $('li', $(this).parent()).removeClass('active');

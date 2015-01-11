@@ -227,7 +227,7 @@ h4 {
 
 .r-input-group,
 .grid-table,
-#reactor-controls {
+#reactor-controls .grid-option {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -285,4 +285,26 @@ h4 {
 
 .loading-animation.simulation {
   float: right;
+}
+
+#costs-area ul {
+  list-style: none;
+}
+
+#costs-area .texture {
+  height: 30px;
+  width: 30px;
+  display: inline-block;
+}
+
+#costs-area .material-label {
+  margin-left: 5px;
+  vertical-align: top;
+  line-height: 3em;
+  font-size: 0.75em;
+}
+
+#costs-area > ul {
+  padding: 0;
+  margin: 0;
 }
