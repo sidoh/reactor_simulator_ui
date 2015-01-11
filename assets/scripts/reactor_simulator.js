@@ -465,39 +465,75 @@
       });
     }
 
-    $('#costs-area')
-        .html('')
-        .append(renderCosts($('<ul></ul>'), totalCosts));
+    var costsArea = $('#costs-area')
+        , costsList = $('> ul', costsArea);
+
+    if (costsList.length == 0) {
+      costsList = $('<ul></ul>');
+      costsArea.append(costsList, totalCosts);
+    } else {
+      renderCosts(costsList, totalCosts);
+    }
   };
 
   var renderCosts = function(base, costs) {
-    $.each(costs, function(i, e) {
-      var elem = $('<li></li>').addClass('costs-item');
-      var bgUrl;
-      if (e.material.character) {
-        bgUrl = 'textures/' + e.material.character;
-      } else {
-        bgUrl = 'icons/' + e.material.key;
-      }
-      var icon = $('<div></div>')
-              .addClass('texture')
-              .css({backgroundImage: 'url(assets/' + bgUrl + '.gif)'}),
-          label = $('<span></span>')
-              .addClass('material-label')
-              .addClass('collapsed')
-              .append(e.material.name + ' (' + addCommas(e.count) + ')');
+    // Will add this tag for present items.
+    $('> li', base).removeData('present');
 
-      elem.append(icon).append(label);
+    $.each(costs, function(i, e) {
+      var elem = $('> li', base)
+              .filter(function () {
+                return $(this).data('material') == e.material.name;
+              })
+          , label;
+
+      if (elem.length == 0) {
+        elem = $('<li></li>')
+            .addClass('costs-item')
+            .data('material', e.material.name)
+            .data('present', true);
+
+        var bgUrl;
+        if (e.material.character) {
+          bgUrl = 'textures/' + e.material.character;
+        } else {
+          bgUrl = 'icons/' + e.material.key;
+        }
+        var icon = $('<div></div>')
+                .addClass('texture')
+                .css({backgroundImage: 'url(assets/' + bgUrl + '.gif)'});
+        label = $('<span></span>')
+            .addClass('material-label')
+            .addClass('collapsed')
+            .append(e.material.name)
+            .append($('<span></span>').addClass('material-count').html(addCommas(e.count)));
+
+        elem.append(icon).append(label);
+        base.append(elem);
+      } else {
+        $('.material-count', elem).html(addCommas(e.count));
+        elem.data('present', true);
+      }
 
       if (e.children && e.children.length > 0) {
-        label.addClass('parent');
-        var childrenBase = $('<ul></ul>');
-        renderCosts(childrenBase, e.children);
-        elem.append(childrenBase);
-      }
+        var childrenBase = $('> ul', elem);
 
-      base.append(elem);
+        if (childrenBase.length == 0) {
+          childrenBase = $('<ul></ul>');
+          label.addClass('parent');
+          elem.append(childrenBase);
+        }
+
+        renderCosts(childrenBase, e.children);
+      }
     });
+
+    // Remove any items not tagged with "present", indicating they're no longer part of the
+    // reactor design.
+    $('> li', base)
+        .filter(function() { return !$(this).data('present'); })
+        .remove();
+
     return base;
   };
 

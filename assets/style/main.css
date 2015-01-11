@@ -298,15 +298,36 @@ h4 {
 }
 
 #costs-area .material-label,
-#costs-area .material-label:before {
+#costs-area .material-label:before,
+#costs-area .material-count {
   margin-left: 5px;
   vertical-align: top;
   line-height: 3em;
   font-size: 0.75em;
 }
 
+#costs-area .material-count {
+  font-size: 0.9em;
+  line-height: 3em;
+}
+
 #costs-area .material-label:before {
   line-height: 3.8em;
+}
+
+#costs-area .material-count:before,
+#costs-area .material-count:after {
+  line-height: 4.5em;
+  font-size: 0.75em;
+  vertical-align: top;
+  padding: 0 2px;
+}
+
+#costs-area .material-count:before {
+ content: ' (';
+}
+#costs-area .material-count:after {
+  content: ')';
 }
 
 #costs-area li .material-label.parent.collapsed:before {
