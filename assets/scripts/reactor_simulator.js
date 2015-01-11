@@ -24,23 +24,36 @@
     ironIngot: { key: 'ironIngot', name: 'Iron Ingot' },
     yelloriumIngot: { key: 'yelloriumIngot', name: 'Yellorium Ingot' },
     fuelRod: { key: 'fuelRod', name: 'Yellorium Fuel Rod' },
-    sand: { key: 'sand', name: 'Sand' }
+    sand: { key: 'sand', name: 'Sand' },
+    reactorCasing: { key: 'reactorCasing', name: 'Casing' },
+    reactorController: { key: 'reactorController', name: 'Controller' },
+    controlRod: { key: 'controlRod', name: 'Control Rod' }
+  };
+
+  var makeRecipe = function(numYield, ingredients) {
+    return {
+      numYield: numYield,
+      ingredients: ingredients
+    };
   };
 
   var materialCosts = {
-    cryotheum: [[materials.blizzPowder, 1], [materials.redstone, 1], [materials.snowball, 1], [materials.niter, 1]],
-    blizzPowder: [[materials.snowball, 1], [materials.redstone, 40]],
-    niter: [[materials.sandstone, 10]], // expected -- generated randomly
-    graphiteBar: [[materials.charcoal, 1], [materials.gravel, 2]],
-    fuelRod: [[materials.ironIngot, 6], [materials.graphiteBar, 2], [materials.yelloriumIngot, 1]],
-    sandstone: [[materials.sand, 4]]
+    cryotheum: makeRecipe(2, [[materials.blizzPowder, 1], [materials.niter, 1], [materials.redstone, 1], [materials.snowball, 1]]),
+    blizzPowder: makeRecipe(1, [[materials.redstone, 40], [materials.snowball, 1]]),
+    niter: makeRecipe(1, [[materials.sandstone, 10]]), // expected -- generated randomly
+    graphiteBar: makeRecipe(1, [[materials.charcoal, 1], [materials.gravel, 2]]),
+    fuelRod: makeRecipe(1, [[materials.graphiteBar, 2], [materials.ironIngot, 6], [materials.yelloriumIngot, 1]]),
+    sandstone: makeRecipe(1, [[materials.sand, 4]]),
+    reactorCasing: makeRecipe(4, [[materials.graphiteBar, 4], [materials.ironIngot, 4], [materials.yelloriumIngot, 1]]),
+    reactorController: makeRecipe(1, [[materials.diamond, 1], [materials.reactorCasing, 4], [materials.redstone, 1], [materials.yelloriumIngot, 2]]),
+    controlRod: makeRecipe(1, [[materials.graphiteBar, 3], [materials.reactorCasing, 4], [materials.redstone, 1], [materials.yelloriumIngot, 1]])
   };
 
   var reactorContentsMaterials = {
     R: [[materials.redstone, 40]],
     E: [[materials.enderPearl, 4]],
     D: [[materials.diamond, 9]],
-    C: [[materials.cryotheum, 5]], // is actually 10, but recipe for cryotheum dust here yields 1 instead of 2
+    C: [[materials.cryotheum, 10]],
     G: [[materials.graphiteBar, 9]],
     X: [[materials.fuelRod, 1]]
   };
@@ -356,27 +369,68 @@
 
   var calculateCost = function() {
     var params = $('#reactor-area').data()
+        , width = params.x
+        , length = params.z
         , height = params.height
         , materialCounts = {}
         , totalCosts = [];
 
     $('.grid-table td.contents').each(function(i, e) {
       var c = $(e).data('character');
-      materialCounts[c] |= 0;
-      materialCounts[c]++;
+
+      if (c) {
+        materialCounts[c] |= 0;
+        materialCounts[c] += height;
+      }
     });
 
+    // Add costs from interior
     $.each(materialCounts, function(k,v) {
+      // Don't add cost for air
+      if (k == 'O') {
+        return;
+      }
+
       var material = $('.grid-option')
           .filter(function() { return $(this).data('character') == k; })
           .data(),
           c = {
             material: material,
-            icon: 'textures/' + material.character + '.gif',
-            count: v*height
+            icon: 'textures/' + k + '.gif',
+            count: v
           };
       c.children = calculateInteriorCost(c);
       totalCosts.push(c);
+    });
+
+    // Add costs for casing, which is
+    var exWidth = (width + 2)
+        , exLength = (length + 2)
+        , numRods = $('.grid-table .contents').filter(function () { return $(this).data('character') == 'X'; }).length
+        , casingCount =
+            // Top and bottom
+            (exWidth * exLength * 2)
+              // Front and back
+            + (exWidth * height * 2)
+              // Left and right. Use internal length to avoid double-counting edges w/ front and back
+            + (length * height * 2)
+              // Minus any control rods, which will occupy slots in the top
+            - numRods
+              // Minus 1 for a controller
+            - 1;
+
+    var casingCost = [
+      { material: materials.reactorCasing, count: casingCount },
+      { material: materials.reactorController, count: 1 }
+    ];
+
+    if (numRods > 0) {
+      casingCost.push({ material: materials.controlRod, count: numRods });
+    }
+
+    $.each(casingCost, function(i, e) {
+      e.children = calculateMaterialCost(e);
+      totalCosts.push(e);
     });
 
     $('#costs-area')
@@ -387,9 +441,15 @@
   var renderCosts = function(base, costs) {
     $.each(costs, function(i, e) {
       var elem = $('<li></li>');
+      var bgUrl;
+      if (e.material.character) {
+        bgUrl = 'textures/' + e.material.character;
+      } else {
+        bgUrl = 'icons/' + e.material.key;
+      }
       var icon = $('<div></div>')
           .addClass('texture')
-          .css({backgroundImage: 'url(assets/' + e.icon + ')' });
+          .css({backgroundImage: 'url(assets/' + bgUrl + '.gif)' });
       elem
           .append(icon)
           .append(
@@ -418,7 +478,6 @@
     $.each(reactorContentsMaterials[cost.material.character], function (i, e) {
       var c = {
         material: e[0],
-        icon: 'icons/' + e[0].key + '.gif',
         count: e[1]*cost.count
       };
       c.children = calculateMaterialCost(c);
@@ -431,11 +490,11 @@
     var materialCost = [];
 
     if (materialCosts[cost.material.key]) {
-      $.each(materialCosts[cost.material.key], function (i, e) {
+      var recipe = materialCosts[cost.material.key];
+      $.each(recipe.ingredients, function (i, e) {
         var c = {
           material: e[0],
-          icon: 'icons/' + e[0].key + '.gif',
-          count: e[1] * cost.count
+          count: Math.ceil((e[1] * cost.count) / recipe.numYield)
         };
         c.children = calculateMaterialCost(c);
         materialCost.push(c);
