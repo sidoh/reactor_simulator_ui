@@ -115,5 +115,12 @@ var showPage
 
       return false;
     });
+
+    $('.toggle-modes > li').click(function() {
+      var parent = $(this).parent()
+          .trigger('modeChange', $(this).data('option'));
+      $('li', parent).removeClass('active');
+      $(this).addClass('active');
+    });
   });
 })(jQuery);

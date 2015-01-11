@@ -297,14 +297,68 @@ h4 {
   display: inline-block;
 }
 
-#costs-area .material-label {
+#costs-area .material-label,
+#costs-area .material-label:before {
   margin-left: 5px;
   vertical-align: top;
   line-height: 3em;
   font-size: 0.75em;
 }
 
+#costs-area .material-label:before {
+  line-height: 3.8em;
+}
+
+#costs-area li .material-label.parent.collapsed:before {
+  content: '[+] ';
+}
+
+#costs-area li .material-label.parent:not(.collapsed):before {
+  content: '[-] ';
+}
+
 #costs-area > ul {
   padding: 0;
   margin: 0;
+}
+
+#costs-area li {
+  cursor: pointer;
+}
+
+#costs-area > ul > li ul {
+  display: none;
+}
+
+.toggle-modes {
+  list-style: none;
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 0;
+  font-size: 0;
+}
+
+.toggle-modes li {
+  display: inline-block;
+  margin: 0;
+  padding: 5px;
+  font-size: 10pt;
+  cursor: pointer;
+}
+
+.toggle-modes :not(:first-child) {
+  border-left: 1px solid #ccc;
+}
+
+.toggle-modes li.active {
+  background-color: #666;
+  font-weight: bold;
+}
+
+.toggle-modes li:not(.active):hover {
+  background-color: #444;
+}
+
+#costs-mode {
+  float: right;
 }

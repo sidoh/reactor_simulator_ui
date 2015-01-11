@@ -55,7 +55,7 @@
     D: [[materials.diamond, 9]],
     C: [[materials.cryotheum, 10]],
     G: [[materials.graphiteBar, 9]],
-    X: [[materials.fuelRod, 1]]
+    X: materialCosts.fuelRod.ingredients
   };
 
   // Used for local testing
@@ -70,6 +70,12 @@
   // Defines bound for graphics sizes
   var MIN_CELL_SIZE = 20
       , MAX_CELL_SIZE = 60;
+
+  // Controls whether we render ingredients tree or just leaves
+  var costModes = {
+        breakdown: 1, totals: 2
+      },
+      costMode = costModes.breakdown;
 
   // Used to dynamically resize cells so that it fits in the viewport
   var cellSize
@@ -198,6 +204,7 @@
 
     reactorArea.append(gridTable);
     setSizes();
+    calculateCost();
   };
 
   var selectGridOption = function(char) {
@@ -396,10 +403,18 @@
           .data(),
           c = {
             material: material,
-            icon: 'textures/' + k + '.gif',
             count: v
           };
-      c.children = calculateInteriorCost(c);
+
+      // this is a gross hack to account for the fact that control rods are sort of treated
+      // as an "interior" material.
+      if (k == 'X') {
+        c.material = materials.fuelRod;
+        c.children = calculateMaterialCost(c);
+      } else {
+        c.children = calculateInteriorCost(c);
+      }
+
       totalCosts.push(c);
     });
 
@@ -433,6 +448,23 @@
       totalCosts.push(e);
     });
 
+    if (costMode == costModes.totals) {
+      totalCosts = collapseCosts(totalCosts);
+    } else {
+      totalCosts.sort(function(a, b) {
+        a = a.material.name;
+        b = b.material.name;
+
+        if (a < b) {
+          return -1;
+        } else if (b < a) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+    }
+
     $('#costs-area')
         .html('')
         .append(renderCosts($('<ul></ul>'), totalCosts));
@@ -440,7 +472,7 @@
 
   var renderCosts = function(base, costs) {
     $.each(costs, function(i, e) {
-      var elem = $('<li></li>');
+      var elem = $('<li></li>').addClass('costs-item');
       var bgUrl;
       if (e.material.character) {
         bgUrl = 'textures/' + e.material.character;
@@ -448,17 +480,17 @@
         bgUrl = 'icons/' + e.material.key;
       }
       var icon = $('<div></div>')
-          .addClass('texture')
-          .css({backgroundImage: 'url(assets/' + bgUrl + '.gif)' });
-      elem
-          .append(icon)
-          .append(
-            $('<span></span>')
-                .addClass('material-label')
-                .append(e.material.name + ' (' + e.count + ')')
-          );
+              .addClass('texture')
+              .css({backgroundImage: 'url(assets/' + bgUrl + '.gif)'}),
+          label = $('<span></span>')
+              .addClass('material-label')
+              .addClass('collapsed')
+              .append(e.material.name + ' (' + addCommas(e.count) + ')');
+
+      elem.append(icon).append(label);
 
       if (e.children && e.children.length > 0) {
+        label.addClass('parent');
         var childrenBase = $('<ul></ul>');
         renderCosts(childrenBase, e.children);
         elem.append(childrenBase);
@@ -480,6 +512,7 @@
         material: e[0],
         count: e[1]*cost.count
       };
+
       c.children = calculateMaterialCost(c);
       materialCost.push(c);
     });
@@ -524,7 +557,14 @@
       }
     });
 
-    return collapsedCosts;
+    var sortedKeys = Object.keys(collapsedCosts).sort()
+        , flattenedCosts = [];
+
+    $.each(sortedKeys, function(i, e) {
+      flattenedCosts.push(collapsedCosts[e]);
+    });
+
+    return flattenedCosts;
   };
 
   $(function() {
@@ -577,9 +617,11 @@
 
     var dragging = false
         , stopDragging = function() {
-          dragging = false;
-          updateHashParams({layout: rlencode(getLayoutStr())});
-          simulate();
+          if (dragging) {
+            dragging = false;
+            updateHashParams({layout: rlencode(getLayoutStr())});
+            simulate();
+          }
           return false;
         };
 
@@ -639,6 +681,20 @@
         updateRodInsertion.call(this, e, ui);
         updateReactor({controlRodInsertion: ui.value});
       }
+    });
+
+    $('body').on('click', '.costs-item', function() {
+      if ($('> ul', this).toggle().is(':visible')) {
+        $('> .material-label', this).removeClass('collapsed');
+      } else {
+        $('> .material-label', this).addClass('collapsed');
+      }
+      return false;
+    });
+
+    $('#costs-mode').on('modeChange', function(e, mode) {
+      costMode = costModes[mode];
+      calculateCost();
     });
 
     var parseReactorParams = function() {
