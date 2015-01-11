@@ -124,8 +124,8 @@
   };
 
   var setSizes = function () {
-    maxReactorWidth = ($(document).width() - $('#reactor-controls').width() - 100)
-    maxReactorHeight = ($(document).height() - $('.masthead').height() - 100);
+    maxReactorWidth = ($(window).width() - $('#reactor-controls').width() - 100);
+    maxReactorHeight = ($(window).height() - $('.masthead').height() - 100);
 
     var reactorWidth = $('.grid-table tr:first td').length
         , reactorHeight = $('.grid-table tr').length
