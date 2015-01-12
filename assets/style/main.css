@@ -374,7 +374,6 @@ h4 {
 
 .toggle-modes li.active {
   background-color: #666;
-  font-weight: bold;
 }
 
 .toggle-modes li:not(.active):hover {
