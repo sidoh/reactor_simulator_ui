@@ -291,6 +291,7 @@
 
   /* Adds UI-calculated fields to simulator response. */
   var augmentResponse = function(response) {
+    var reactorParams = $('#reactor-area').data();
     response = $.extend({}, response);
 
     // Apply modpack modifiers
@@ -303,15 +304,11 @@
 
     response.outputPerFuel = output / fuelUse;
 
-    /* Interior sizes (no casing) */
-    var x = parseInt($('#length').val());
-    var z = parseInt($('#width').val());
-    var y = parseInt($('#height').val());
+    // Reactor dimensions are interior. +2 to get exterior dimensions
+    var volume = (reactorParams.x + 2) * (reactorParams.z + 2) * (reactorParams.height + 2);
 
-    /* Exterior size (counts casing) */
-    var blocks = (x + 2) * (z + 2) * (y + 2);
-    response.outputPerBlock = output / blocks;
-    response.outputPerFuelPerBlock = fuelEff / blocks;
+    response.outputPerBlock = output / volume;
+    response.outputPerFuelPerBlock = fuelEff / volume;
 
     $.each(response, function(k, v) {
       response[k] = addCommas(Math.round(v * 100) / 100);
