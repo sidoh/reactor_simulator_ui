@@ -383,3 +383,8 @@ h4 {
 #costs-mode {
   float: right;
 }
+
+#reactor-title {
+  float: left;
+  margin: 15px 100px;
+}

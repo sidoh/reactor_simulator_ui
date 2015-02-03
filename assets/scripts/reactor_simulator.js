@@ -164,6 +164,9 @@
     var reactor = $('#reactor-area');
     reactor.data($.extend(reactor.data(), params));
 
+    $('#reactor-title').html('Editing: ' +
+    params.x + 'x' + params.z + 'x' + params.height + ' Reactor');
+
     delete params['x'];
     delete params['z'];
     updateHashParams(params);
