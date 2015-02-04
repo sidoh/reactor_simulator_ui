@@ -42,7 +42,7 @@
     cryotheum: makeRecipe(2, [[materials.blizzPowder, 1], [materials.niter, 1], [materials.redstone, 1], [materials.snowball, 1]]),
     blizzPowder: makeRecipe(1, [[materials.redstone, 40], [materials.snowball, 1]]),
     niter: makeRecipe(1, [[materials.sandstone, 10]]), // expected -- generated randomly
-    graphiteBar: makeRecipe(1, [[materials.charcoal, 1], [materials.gravel, 2]]),
+    graphiteBar: makeRecipe(1, [[materials.charcoal, 1]]), // in a furnace
     fuelRod: makeRecipe(1, [[materials.graphiteBar, 2], [materials.ironIngot, 6], [materials.yelloriumIngot, 1]]),
     sandstone: makeRecipe(1, [[materials.sand, 4]]),
     reactorCasing: makeRecipe(4, [[materials.graphiteBar, 4], [materials.ironIngot, 4], [materials.yelloriumIngot, 1]]),
