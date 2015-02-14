@@ -6,6 +6,7 @@
     { character: 'G', name: 'Graphite Block' },
     { character: 'R', name: 'Destabilized Redstone' },
     { character: 'X', name: 'Control Rod' },
+    { character: 'L', name: 'Block of Gold' },
     { character: 'O', name: 'Air' }
   ];
 
@@ -27,7 +28,8 @@
     sand: { key: 'sand', name: 'Sand' },
     reactorCasing: { key: 'reactorCasing', name: 'Casing' },
     reactorController: { key: 'reactorController', name: 'Controller' },
-    controlRod: { key: 'controlRod', name: 'Control Rod' }
+    controlRod: { key: 'controlRod', name: 'Control Rod' },
+    goldIngot: { key: 'goldIngot', name: 'Gold Ingot' }
   };
 
   var makeRecipe = function(numYield, ingredients) {
@@ -57,7 +59,8 @@
     D: [[materials.diamond, 9]],
     C: [[materials.cryotheum, 10]],
     G: [[materials.graphiteBar, 9]],
-    X: materialCosts.fuelRod.ingredients
+    X: materialCosts.fuelRod.ingredients,
+    L: [[materials.goldIngot, 9]]
   };
 
   var modpacks = {
