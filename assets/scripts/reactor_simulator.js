@@ -42,7 +42,7 @@
   // Crafting recipes for various materials
   var materialCosts = {
     cryotheum: makeRecipe(2, [[materials.blizzPowder, 1], [materials.niter, 1], [materials.redstone, 1], [materials.snowball, 1]]),
-    blizzPowder: makeRecipe(1, [[materials.redstone, 40], [materials.snowball, 1]]),
+    blizzPowder: makeRecipe(1, [[materials.redstone, 2], [materials.snowball, 1]]),
     niter: makeRecipe(1, [[materials.sandstone, 10]]), // expected -- generated randomly
     graphiteBar: makeRecipe(1, [[materials.charcoal, 1]]), // in a furnace
     fuelRod: makeRecipe(1, [[materials.graphiteBar, 2], [materials.ironIngot, 6], [materials.yelloriumIngot, 1]]),
@@ -54,7 +54,7 @@
 
   // Reactor interiors -> crafting ingredients
   var reactorContentsMaterials = {
-    R: [[materials.redstone, 40]],
+    R: [[materials.redstone, 10]],
     E: [[materials.enderPearl, 4]],
     D: [[materials.diamond, 9]],
     C: [[materials.cryotheum, 10]],
