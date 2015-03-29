@@ -394,7 +394,7 @@
               var error;
               if (err == 'Bad Gateway') {
                 error = 'API unresponsive. May be restarting with updates.';
-              } else if (textStatus == 429) {
+              } else if (jqhxr.status == 429) {
                 error = 'Rate limit exceeded.';
               } else {
                 error = textStatus + ", " + err;
