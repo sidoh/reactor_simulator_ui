@@ -235,6 +235,10 @@
     calculateCost();
   };
 
+  var isAutoUpdate = function() {
+    return $('#auto-update').is(':checked');
+  };
+
   var selectGridOption = function(char) {
     var selected = $('.grid-option')
         .removeClass('selected')
@@ -275,7 +279,7 @@
           .data('character', selected.data('character'))
           .append(getTextureImg(selected.data('character')).width(cellSize).height(cellSize));
 
-      if (update) {
+      if (update && isAutoUpdate()) {
         simulate();
       }
     }
@@ -709,7 +713,10 @@
           if (dragging) {
             dragging = false;
             updateHashParams({layout: rlencode(getLayoutStr())});
-            simulate();
+
+            if (isAutoUpdate()) {
+              simulate();
+            }
           }
           return false;
         };
@@ -735,7 +742,9 @@
     $('#fill').click(function() {
       $('.grid-table td.contents').each(function() { processCell.call(this, null, false); });
       updateHashParams({layout: rlencode(getLayoutStr())});
-      simulate();
+      if (isAutoUpdate()) {
+        simulate();
+      }
     });
 
     $('#simulate').click(simulate);
@@ -830,6 +839,13 @@
         parseReactorParams();
       }
       previousPage = getHashLocation();
+    });
+
+    $('#auto-update').bootstrapSwitch({
+      size: 'small',
+      labelText: 'Auto-Update',
+      labelWidth: '100px',
+      inverse: true
     });
   });
 })(jQuery);
