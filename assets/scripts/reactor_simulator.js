@@ -767,8 +767,11 @@
       return false;
     });
 
-    var updateRodInsertion = function(e, ui) {
-      $('#control-rod-insertion-value').html(ui.value + '%');
+    var updateRodInsertion = function(value, isUpdateReactor) {
+      $('#control-rod-insertion-value').html(value + '%');
+      if (isUpdateReactor) {
+        updateReactor({controlRodInsertion: value});
+      }
     };
 
     $('#control-rod-insertion').slider({
@@ -776,10 +779,11 @@
       max: 100,
       value: 0,
       step: 1,
-      slide: updateRodInsertion,
+      slide: function (e, ui) {
+        updateRodInsertion(ui.value, false);
+      },
       stop: function (e, ui) {
-        updateRodInsertion.call(this, e, ui);
-        updateReactor({controlRodInsertion: ui.value});
+        updateRodInsertion(ui.value, true);
       }
     });
 
@@ -855,7 +859,7 @@
         var slider = $('#control-rod-insertion')
             , newValue = Math.max(0, Math.min(100, value + slider.slider('value')));
         slider.slider('value', newValue);
-        $('#control-rod-insertion-value').html(newValue + '%');
+        updateRodInsertion(newValue, true);
       }
     });
   });
