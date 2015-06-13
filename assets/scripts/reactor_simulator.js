@@ -167,7 +167,7 @@
     var reactor = $('#reactor-area');
     reactor.data($.extend(reactor.data(), params));
 
-    if (params.x && params.y && params.z) {
+    if (params.x && params.z && params.height) {
       $('#reactor-title').html('Editing: ' +
       params.x + 'x' + params.z + 'x' + params.height + ' Reactor');
     }
