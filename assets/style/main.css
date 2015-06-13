@@ -388,3 +388,7 @@ h4 {
   float: left;
   margin: 15px 100px;
 }
+
+.control-rod-plusminus {
+  display: inline-block;
+}

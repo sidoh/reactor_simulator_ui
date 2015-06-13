@@ -1,0 +1,31 @@
+.plusminus {
+  display: inline-block;
+}
+
+.plusminus-container {
+  width: 20px;
+  display: inline-block;
+}
+
+.plusminus-label {
+  display: inline-block;
+  vertical-align: top;
+  margin: 10px 0 0 8px;
+}
+
+.plusminus-plus,
+.plusminus-minus {
+  display: inline-block;
+  border: 1px solid #fff;
+  padding: 0 5px;
+  cursor: pointer;
+}
+
+.plusminus-plus:hover,
+.plusminus-minus:hover {
+  background-color: #666;
+}
+
+.plusminus-plus {
+  border-bottom: 0;
+}

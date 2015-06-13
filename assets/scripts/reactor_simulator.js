@@ -847,5 +847,14 @@
       labelWidth: '100px',
       inverse: true
     });
+
+    $('.control-rod-plusminus').plusminus({
+      callback: function(value) {
+        var slider = $('#control-rod-insertion')
+            , newValue = Math.max(0, Math.min(100, value + slider.slider('value')));
+        slider.slider('value', newValue);
+        $('#control-rod-insertion-value').html(newValue + '%');
+      }
+    });
   });
 })(jQuery);
