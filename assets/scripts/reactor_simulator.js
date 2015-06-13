@@ -182,7 +182,9 @@
       $('.passive-only').show();
     }
 
-    simulate();
+    if (isAutoUpdate()) {
+      simulate();
+    }
   };
 
   var createReactor = function(x, z, height, activelyCooled, controlRodInsertion) {
