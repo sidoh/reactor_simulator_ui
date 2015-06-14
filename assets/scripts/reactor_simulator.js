@@ -372,19 +372,37 @@
     return true;
   };
 
-  var simulate = function() {
+  var buildDefinition = function() {
     var reactorArea = $('#reactor-area')
-        , params = reactorArea.data()
-        , validationResult = validateReactor()
-        , definition = {
-          // Definitions are swapped from how they're interpreted in the simulator code.
-          xSize: params.z + 2,
-          zSize: params.x + 2,
-          height: params.height + 2,
-          layout: getLayoutStr(),
-          isActivelyCooled: params.activelyCooled,
-          controlRodInsertion: params.controlRodInsertion
-        };
+        , params = reactorArea.data();
+
+    return {
+      // Definitions are swapped from how they're interpreted in the simulator code.
+      xSize: params.z + 2,
+      zSize: params.x + 2,
+      height: params.height + 2,
+      layout: getLayoutStr(),
+      isActivelyCooled: params.activelyCooled,
+      controlRodInsertion: params.controlRodInsertion
+    };
+  };
+
+  var handleErrorResponse = function(jqhxr, textStatus, err) {
+    var error;
+    if (err == 'Bad Gateway') {
+      error = 'API unresponsive. May be restarting with updates.';
+    } else if (jqhxr.status == 429) {
+      error = 'Too many requests. Please slow down.';
+    } else {
+      error = textStatus + ", " + err;
+    }
+    $('#error-area').html(error);
+    loading.hide();
+  };
+
+  var simulate = function() {
+    var validationResult = validateReactor()
+        , definition = buildDefinition();
 
     if (validationResult !== true) {
       $('#error-area').html(validationResult);
@@ -398,19 +416,7 @@
       } else {
         $.getJSON('/api/simulate', {definition: JSON.stringify(definition)})
             .done(displaySimulationResponse)
-            .fail(function (jqhxr, textStatus, err) {
-              var error;
-              if (err == 'Bad Gateway') {
-                error = 'API unresponsive. May be restarting with updates.';
-              } else if (jqhxr.status == 429) {
-                error = 'Too many requests. Please slow down.';
-              } else {
-                error = textStatus + ", " + err;
-              }
-              $('#error-area').html(error);
-              loading.hide();
-            }
-        );
+            .fail(handleErrorResponse);
       }
     }
     calculateCost();
@@ -775,6 +781,28 @@
         updateReactor({controlRodInsertion: value});
       }
     };
+
+    var optimizeInsertion = function() {
+      var validationResult = validateReactor()
+          , definition = buildDefinition();
+
+      if (validationResult !== true) {
+        $('#error-area').html(validationResult);
+        $('#simulation-results .value').html('-');
+      } else {
+        $.getJSON('/api/optimize_insertion', {definition: JSON.stringify(definition)})
+            .done(function(result) {
+              updateRodInsertion(result, true);
+              $('#optimize-control-rod').button('reset');
+            })
+            .fail(handleErrorResponse);
+      }
+    };
+
+    $('#optimize-control-rod').click(function() {
+      $(this).button('loading');
+      optimizeInsertion();
+    });
 
     $('#control-rod-insertion').slider({
       min: 0,

@@ -392,3 +392,7 @@ h4 {
 .control-rod-plusminus {
   display: inline-block;
 }
+
+#optimize-control-rod {
+  margin-top: 10px;
+}
