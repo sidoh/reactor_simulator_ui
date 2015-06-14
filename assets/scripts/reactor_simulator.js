@@ -777,6 +777,7 @@
 
     var updateRodInsertion = function(value, isUpdateReactor) {
       $('#control-rod-insertion-value').html(value + '%');
+      $('#control-rod-insertion').slider('value', value);
       if (isUpdateReactor) {
         updateReactor({controlRodInsertion: value});
       }
