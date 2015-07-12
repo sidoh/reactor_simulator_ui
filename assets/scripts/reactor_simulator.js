@@ -819,14 +819,6 @@
       };
     };
 
-    $('#reactor-taller').click(function() {
-      bumpReactorSize(1);
-    });
-
-    $('#reactor-shorter').click(function() {
-      bumpReactorSize(-1);
-    });
-
     $('#control-rod-insertion').slider({
       min: 0,
       max: 100,
