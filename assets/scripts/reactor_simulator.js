@@ -814,7 +814,7 @@
         $('#error-area').html('cannot get taller');
       } else {
         updateReactor({height:h});
-      };
+      }
     };
 
     $('#control-rod-insertion').slider({
