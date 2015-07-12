@@ -400,3 +400,7 @@ h4 {
 #optimize-control-rod {
   margin-top: 10px;
 }
+
+.live-height-panel {
+  display: inline-block;
+}
