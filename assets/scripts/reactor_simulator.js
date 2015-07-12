@@ -184,6 +184,8 @@
       $('.passive-only').show();
     }
 
+    $('#live-height-label').html(params.height);
+
     if (isAutoUpdate()) {
       simulate();
     }
@@ -906,5 +908,13 @@
         updateRodInsertion(newValue, true);
       }
     });
+
+    $('.live-height-plusminus').plusminus({
+      value: 0,
+      callback: function(value) {
+        var newHeight = $('#reactor-area').data('height') + value;
+        updateReactorHeight(newHeight);
+      }
+    })
   });
 })(jQuery);
