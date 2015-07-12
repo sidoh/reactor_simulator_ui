@@ -808,15 +808,12 @@
     });
 
     var updateReactorHeight = function(h) {
-      var reactor = $('#reactor-area');
       if (h < MIN_HEIGHT) {
         $('#error-area').html('cannot get shorter');
       } else if (h > MAX_HEIGHT) {
         $('#error-area').html('cannot get taller');
       } else {
-        var x = reactor.data('x')
-        var z = reactor.data('z')
-        updateReactor({x: x, z: z, height:h});
+        updateReactor({height:h});
       };
     };
 
