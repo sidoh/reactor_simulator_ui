@@ -805,6 +805,28 @@
       optimizeInsertion();
     });
 
+    var bumpReactorSize = function(bump) {
+      var reactor = $('#reactor-area');
+      var h = reactor.data('height') + bump;
+      if (h < MIN_HEIGHT) {
+        $('#error-area').html('cannot get shorter');
+      } else if (h > MAX_HEIGHT) {
+        $('#error-area').html('cannot get taller');
+      } else {
+        var x = reactor.data('x')
+        var z = reactor.data('z')
+        updateReactor({x: x, z: z, height:h});
+      };
+    };
+
+    $('#reactor-taller').click(function() {
+      bumpReactorSize(1);
+    });
+
+    $('#reactor-shorter').click(function() {
+      bumpReactorSize(-1);
+    });
+
     $('#control-rod-insertion').slider({
       min: 0,
       max: 100,
