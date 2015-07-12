@@ -805,9 +805,8 @@
       optimizeInsertion();
     });
 
-    var bumpReactorSize = function(bump) {
+    var updateReactorHeight = function(h) {
       var reactor = $('#reactor-area');
-      var h = reactor.data('height') + bump;
       if (h < MIN_HEIGHT) {
         $('#error-area').html('cannot get shorter');
       } else if (h > MAX_HEIGHT) {
