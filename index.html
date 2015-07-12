@@ -68,11 +68,12 @@
         <div id="reactor-controls">
           <div id="controls-tabs" class="tab-container">
             <ol class="tab-controls">
-              <li class="active" data-for="design">Design</li>
+              <li class="active" data-for="layout">Layout</li>
               <li data-for="controls">Controls</li>
+              <li data-for="design">Design</li>
             </ol>
 
-            <div class="tab active" data-tab-name="design">
+            <div class="tab active" data-tab-name="layout">
               <div id="grid-selection">&nbsp;</div>
 
               <div id="controls-grid"></div>
@@ -106,9 +107,9 @@
                   <span id="control-rod-insertion-value">0%</span>
 
                   <div>
-                    <div class="control-rod-plusminus" data-value="1" data-label="1%"></div>
-                    <div class="control-rod-plusminus" data-value="5" data-label="5%"></div>
-                    <div class="control-rod-plusminus" data-value="10" data-label="10%"></div>
+                    <div class="plusminus control-rod-plusminus" data-value="1" data-label="1%"></div>
+                    <div class="plusminus control-rod-plusminus" data-value="5" data-label="5%"></div>
+                    <div class="plusminus control-rod-plusminus" data-value="10" data-label="10%"></div>
                   </div>
 
                   <div>
@@ -125,6 +126,23 @@
                     <ul id="modpack" class="toggle-modes">
                     </ul>
                   </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tab" data-tab-name="design">
+              <div id="size-controls">
+                <div class="live-height-panel">
+                  <label for="live-height">Height</label>
+
+                  <div id="live-height"></div>
+                  <span id="live-height-label">0</span>
+                </div>
+
+                <div class="live-height-panel">
+                  <div class="plusminus live-height-plusminus" data-value="1" data-label="1"></div>
+                  <div class="plusminus live-height-plusminus" data-value="5" data-label="5"></div>
+                  <div class="plusminus live-height-plusminus" data-value="10" data-label="10"></div>
                 </div>
               </div>
             </div>

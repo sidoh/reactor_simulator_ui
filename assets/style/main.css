@@ -125,6 +125,10 @@ h4 {
   margin: 15px;
 }
 
+#size-controls {
+  margin: 15px;
+}
+
 #reactor-area {
   max-width: 500px;
   max-height: 500px;
@@ -389,10 +393,20 @@ h4 {
   margin: 15px 100px;
 }
 
-.control-rod-plusminus {
+.plusminus {
   display: inline-block;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 #optimize-control-rod {
   margin-top: 10px;
+}
+
+.live-height-panel {
+  display: inline-block;
 }

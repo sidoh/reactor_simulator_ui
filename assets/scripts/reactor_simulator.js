@@ -166,10 +166,11 @@
   var updateReactor = function(params) {
     var reactor = $('#reactor-area');
     reactor.data($.extend(reactor.data(), params));
+    var reactorParams = reactor.data();
 
-    if (params.x && params.z && params.height) {
+    if (reactorParams.x && reactorParams.z && reactorParams.height) {
       $('#reactor-title').html('Editing: ' +
-      params.x + 'x' + params.z + 'x' + params.height + ' Reactor');
+      reactorParams.x + 'x' + reactorParams.z + 'x' + reactorParams.height + ' Reactor');
     }
 
     delete params['x'];
@@ -183,6 +184,8 @@
       $('.active-only').hide();
       $('.passive-only').show();
     }
+
+    $('#live-height-label').html(reactorParams.height);
 
     if (isAutoUpdate()) {
       simulate();
@@ -805,6 +808,16 @@
       optimizeInsertion();
     });
 
+    var updateReactorHeight = function(h) {
+      if (h < MIN_HEIGHT) {
+        $('#error-area').html('cannot get shorter');
+      } else if (h > MAX_HEIGHT) {
+        $('#error-area').html('cannot get taller');
+      } else {
+        updateReactor({height:h});
+      }
+    };
+
     $('#control-rod-insertion').slider({
       min: 0,
       max: 100,
@@ -893,5 +906,13 @@
         updateRodInsertion(newValue, true);
       }
     });
+
+    $('.live-height-plusminus').plusminus({
+      value: 0,
+      callback: function(value) {
+        var newHeight = $('#reactor-area').data('height') + value;
+        updateReactorHeight(newHeight);
+      }
+    })
   });
 })(jQuery);
