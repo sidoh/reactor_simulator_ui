@@ -166,10 +166,11 @@
   var updateReactor = function(params) {
     var reactor = $('#reactor-area');
     reactor.data($.extend(reactor.data(), params));
+    var reactorParams = reactor.data();
 
-    if (params.x && params.z && params.height) {
+    if (reactorParams.x && reactorParams.z && reactorParams.height) {
       $('#reactor-title').html('Editing: ' +
-      params.x + 'x' + params.z + 'x' + params.height + ' Reactor');
+      reactorParams.x + 'x' + reactorParams.z + 'x' + reactorParams.height + ' Reactor');
     }
 
     delete params['x'];
@@ -184,7 +185,7 @@
       $('.passive-only').show();
     }
 
-    $('#live-height-label').html(params.height);
+    $('#live-height-label').html(reactorParams.height);
 
     if (isAutoUpdate()) {
       simulate();
