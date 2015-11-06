@@ -737,8 +737,8 @@
     $('body')
         .on('mousedown', '.grid-table td.contents', function () {
           //dragging = true;
-          //processCell.call(this);
-          //updateHashParams({layout: rlencode(getLayoutStr())});
+          processCell.call(this);
+          updateHashParams({layout: rlencode(getLayoutStr())});
         })
         .on('mouseup', '.grid-table', stopDragging)
         .on('mouseenter', '.grid-table td.contents',
