@@ -315,6 +315,9 @@
     response.output *= modpackConfig.powerProductionMultiplier;
     response.fuelConsumption *= modpackConfig.fuelUsageMultiplier;
 
+    // Calculated value (mB per tick) * (20 tick per second) * (60 second per minute) * (1 ingot per 1000 mB)
+    response.outputIngotConsumption = response.fuelConsumption * 20 * 60 / 1000
+
     var output = response.output;
     var fuelUse = response.fuelConsumption;
     var fuelEff = output / fuelUse;
