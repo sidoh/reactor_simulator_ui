@@ -393,6 +393,8 @@
     };
   };
 
+  var loading = $('.loading-animation.simulation');
+
   var handleErrorResponse = function(jqhxr, textStatus, err) {
     var error;
     if (err == 'Bad Gateway') {
@@ -414,7 +416,7 @@
       $('#error-area').html(validationResult);
       $('#simulation-results .value').html('-');
     } else {
-      var loading = $('.loading-animation.simulation').show();
+      loading.show();
 
       if (window.location.origin === 'file://') {
         displaySimulationResponse(SAMPLE_RESPONSE);
@@ -738,7 +740,12 @@
         };
 
     $('body')
-        .on('mousedown', '.grid-table td.contents', function () {
+        .on('mousedown', '.grid-table td.contents', function (evt) {
+          if (evt.shiftKey) {
+            selectGridOption($(this).data('character'));
+            evt.preventDefault();
+            return true;
+          }
           dragging = true;
           processCell.call(this);
           updateHashParams({layout: rlencode(getLayoutStr())});
