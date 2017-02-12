@@ -55,6 +55,7 @@ a {
   display: inline-block;
   margin: 3px;
   border: 1px solid #ccc;
+  padding: 1px;
   cursor: pointer;
 }
 
@@ -69,6 +70,7 @@ a {
 }
 
 .grid-option.selected {
+  padding: 0;
   border: 2px solid yellow;
 }
 
