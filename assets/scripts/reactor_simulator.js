@@ -740,7 +740,12 @@
         };
 
     $('body')
-        .on('mousedown', '.grid-table td.contents', function () {
+        .on('mousedown', '.grid-table td.contents', function (evt) {
+          if (evt.shiftKey) {
+            selectGridOption($(this).data('character'));
+            evt.preventDefault();
+            return true;
+          }
           dragging = true;
           processCell.call(this);
           updateHashParams({layout: rlencode(getLayoutStr())});
